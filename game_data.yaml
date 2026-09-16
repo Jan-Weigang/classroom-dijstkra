@@ -115,10 +115,13 @@ edges:
       Moment durch die Seitentür, gerade so ungetroffen, hinaus auf den
       Hof.
     backwardText: >-
-      Du drückst dich noch einmal durch dieselbe Seitentür zurück in die
-      Sporthalle – und stehst prompt wieder mitten in einem neuen Anwurf,
-      drei Bälle gleichzeitig im Anflug, während der Sportlehrer schon
-      wieder in seine Pfeife bläst.
+      Von der Seitentür am Hof aus hörst du es schon dumpf durch die Wand
+      dröhnen: Pfeifenschrille, Quietschen von Turnschuhen, ein Raunen der
+      Menge. Du drückst die schwere Tür auf und stehst ohne Vorwarnung
+      mitten in einem tobenden Völkerballspiel; sofort fliegen zwei Bälle
+      synchron auf dich zu, jemand ruft völlig fremd deinen Namen, als
+      würdest du seit Ewigkeiten mitspielen, und der Sportlehrer pfeift,
+      ohne aufzusehen, längst wieder für die nächste Runde.
   - from: sporthalle
     to: ziel
     forwardText: >-
@@ -148,10 +151,13 @@ edges:
       Fallschirm und wirft dich kurzerhand aus dem Fenster – du landest,
       reichlich unsanft, mitten auf dem Hof.
     backwardText: >-
-      Herr Dr. Kessler winkt dir vom Fenster aus fröhlich zu – „Nächster
-      Testflug gefällig?“ – doch du schüttelst den Kopf und kletterst
-      stattdessen brav die Treppe zurück hoch in den NW-Trakt, wo der
-      Streit der Sanitäter noch immer nicht entschieden ist.
+      Vom Hof aus siehst du im ersten Stock ein Fenster weit offenstehen;
+      Herr Dr. Kessler, hochmotivierter Physiklehrer, winkt dir aufgeregt
+      zu und ruft irgendetwas von einem „umgekehrten Fallversuch“. Du
+      nimmst die Außentreppe zwei Stufen auf einmal, stolperst oben fast
+      über einen Stapel Fallschirmseide, und stehst, etwas außer Atem,
+      mitten im NW-Trakt, wo gerade zwei Sanitäter lautstark über
+      „Sportunfall“ oder „sonstiger Unfall“ streiten.
   - from: nw_trakt
     to: bibliothek
     forwardText: >-
@@ -164,10 +170,14 @@ edges:
       hältst instinktiv den Atem an, während irgendwo leise ein
       Buchrücken knarzt.
     backwardText: >-
-      Du schleichst dich aus der Bibliothek und die Hintertreppe wieder
-      hoch, an der Bibliothekarin vorbei, die dich mit zusammengekniffenen
-      Augen und gespannter Zwille beobachtet, und stehst wieder mitten im
-      Streit des Schulsanitätsdienstes im NW-Trakt.
+      Aus der Bibliothek schiebst du dich rückwärts durch eine
+      unscheinbare Tür neben dem Regal mit den Chemie-Nachschlagewerken –
+      die Bibliothekarin hebt kurz die Zwille, senkt sie aber wieder, als
+      sie merkt, dass du nur den Raum wechselst. Die Hintertreppe hinauf
+      triffst du mitten hinein in den Streit des Schulsanitätsdienstes,
+      zwei Fünftklässler, die sich lautstark nicht einig sind, ob es ein
+      „Sportunfall“ oder ein „sonstiger Unfall“ war, während irgendwo
+      Chemiegeruch in der Luft hängt.
   - from: bibliothek
     to: ziel
     forwardText: >-
@@ -199,10 +209,14 @@ edges:
       Flurboden aus, hörst hinter dir noch ein zweites, drittes Haargummi
       surren, und flüchtest, leicht außer Atem, hinaus auf den Hof.
     backwardText: >-
-      Du schleichst zurück durch dieselbe Tür in die Bibliothek, in der
-      Hoffnung, dass die Bibliothekarin dich diesmal übersieht – die
-      Zwille ist noch gespannt, aber sie zielt gerade, mit stoischer
-      Miene, in eine ganz andere Richtung.
+      Vom Hof aus stößt du eine unauffällige Seitentür auf, die direkt in
+      die Bibliothek führt – die Bibliothekarin fährt sofort herum,
+      Zwille im Anschlag, ein Auge zusammengekniffen, offensichtlich
+      nicht amüsiert über den plötzlichen Luftzug und das grelle
+      Tageslicht, das mit dir hereinfällt. Du hebst beschwichtigend die
+      Hände, schleichst geduckt zwischen zwei Regalreihen hindurch,
+      kassierst trotzdem ein Haargummi knapp am Ohr, und hältst, mitten
+      zwischen den Büchern, instinktiv den Atem an.
   - from: hof
     to: ziel
     forwardText: >-
