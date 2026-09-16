@@ -8,41 +8,54 @@ nodes:
       Noch wenige Minuten bis zur großen Pause. Im hintersten Winkel der
       Schulküche wartet der allerletzte Schoko-Donut. Finde den kürzesten Weg
       zur Theke – bevor es klingelt.
-    entryText: Du bist wieder am Ausgangspunkt angekommen.
-    exitText: Du entscheidest dich sofort und läufst los.
+    entryText: >-
+      Du bist wieder am Ausgangspunkt angekommen. Die Uhr über dem Sekretariat
+      tickt unbarmherzig weiter, während sich der Flur langsam mit dem
+      vertrauten Lärm der großen Pause füllt.
+    exitText: >-
+      Du wirfst noch einen letzten Blick auf die drei offenen Türen, atmest
+      tief durch und entscheidest dich, ohne weiter zu zögern, für einen der
+      Wege, die vor dir liegen.
 
   hausmeister:
     name: Der Hausmeister
     short: Hausm.
     blurb: Strenge Autorität – und überraschend hilfsbereit.
     entryText: >-
-      Du erreichst Hausmeister Brzenska. Sein Schlüsselbund ist so groß wie ein
-      Steuerrad, und sein prüfender Blick folgt dir bis zur nächsten Tür.
+      Du erreichst Hausmeister Brzenska. Kurzer Blick, kurzes Nicken, kein
+      Wort zu viel.
     exitText: >-
-      Du murmelst etwas von einem Donut, lässt den Hausmeister hinter dir und
-      suchst den nächsten Durchgang.
+      Er zeigt wortlos auf die nächste Tür und wendet sich schon wieder
+      seinem Kaffee zu.
 
   lehrer:
     name: Der Lehrer mit Redebedarf
     short: Lehrer
     blurb: Er meint es gut. Sehr, sehr ausführlich gut.
     entryText: >-
-      Du landest bei Herrn Dr. Vogelsang. „Ah, gut, dass ich Sie sehe – nur ganz
-      kurz!“, beginnt er und holt tief Luft.
+      Du landest bei Herrn Dr. Vogelsang. „Ah, gut, dass ich Sie sehe – nur
+      ganz kurz!“, beginnt er und holt tief Luft, bevor er zu einer
+      Geschichte über sein Referendariat ansetzt, die garantiert nicht kurz
+      bleiben wird, während du innerlich die Sekunden bis zum Pausenende
+      mitzählst.
     exitText: >-
-      Zwischen zwei abschließenden Bemerkungen entdeckst du eine winzige
-      Gesprächspause und ziehst weiter.
+      Zwischen zwei ausschweifenden Nebensätzen über die gute alte Zeit
+      entdeckst du eine winzige Gesprächspause, murmelst eine Entschuldigung
+      und ziehst weiter, bevor er den Faden wiederfindet.
 
   bibliothek:
     name: Die Bibliothek
     short: Biblio.
     blurb: Angeblich der leiseste Ort der Schule. Angeblich.
     entryText: >-
-      Du schlüpfst durch die schwere Bibliothekstür. Zwischen den Regalreihen
-      riecht es nach altem Papier, und irgendwo tickt eine Uhr viel zu laut.
+      Du schlüpfst durch die schwere Bibliothekstür. Zwischen den
+      Regalreihen riecht es nach altem Papier, irgendwo tickt eine Uhr viel
+      zu laut, und die Bibliothekarin blickt kurz über ihre Brille, sagt
+      aber nichts.
     exitText: >-
-      Du legst das Buch, das du nie aufgeschlagen hast, zurück ins Regal und
-      schleichst so leise wie möglich zur nächsten Tür hinaus.
+      Du legst das Buch, das du nie aufgeschlagen hast, lautlos zurück ins
+      Regal und schleichst so leise wie möglich zur nächsten Tür hinaus,
+      bevor jemand „Pssst“ sagen kann.
 
   keller:
     name: Die Kellertreppe
@@ -50,10 +63,10 @@ nodes:
     blurb: Kühl, eng, kurz. Fast zu praktisch.
     entryText: >-
       Du erreichst die kühle Kellertreppe und nimmst die letzten Stufen mit
-      einem Satz.
+      einem Satz, das Geländer eiskalt unter der Hand.
     exitText: >-
       Du stößt dich vom Geländer ab und verschwindest durch den nächsten
-      schmalen Durchgang.
+      schmalen, muffigen Durchgang.
 
   ziel:
     goal: true
@@ -61,38 +74,45 @@ nodes:
     short: Theke
     blurb: Warm, schokoladig, greifbar nah.
     entryText: >-
-      Du erreichst die Cafeteria-Theke. Der warme Duft von Schokolade hängt in
-      der Luft, und der letzte Schoko-Donut liegt direkt vor dir.
-    exitText: Mit dem Donut in der Hand drehst du dich noch einmal um.
+      Du erreichst die Cafeteria-Theke. Der warme Duft von Schokolade hängt
+      in der Luft, und der letzte Schoko-Donut liegt direkt vor dir, als
+      hätte er nur auf dich gewartet.
+    exitText: >-
+      Mit dem Donut sicher in der Hand drehst du dich noch einmal um und
+      siehst dich kurz nach den anderen um, die es nicht rechtzeitig
+      geschafft haben.
 
-# Topologie und Gewichte entsprechen dem bekannten Wikipedia-Beispielgraphen zu
-# Dijkstras Algorithmus (Knoten 1-6), Gewichte mit Faktor 100 skaliert, damit
-# genug Platz für Fließtext bleibt. Siehe README für das `weight`-Feld.
+# Topologie entspricht dem bekannten Wikipedia-Beispielgraphen zu Dijkstras
+# Algorithmus (Knoten 1-6). Gewichte mit Faktor 50 skaliert und über das
+# optionale `weight`-Feld gesetzt (siehe README): der reine Textlängen-
+# Mechanismus kann diese Art von Graph strukturell nicht abbilden, da ein
+# Umweg über einen Zwischenknoten dort nie günstiger sein kann als eine
+# direkte Kante zwischen denselben zwei Knoten.
 edges:
   - from: start
     to: lehrer
+    weight: 350
+  - from: start
+    to: hausmeister
+    weight: 450
+  - from: start
+    to: keller
     weight: 700
-  - from: start
-    to: hausmeister
-    weight: 900
-  - from: start
-    to: keller
-    weight: 1400
   - from: lehrer
     to: hausmeister
-    weight: 1000
+    weight: 500
   - from: lehrer
     to: bibliothek
-    weight: 1500
+    weight: 750
   - from: hausmeister
     to: bibliothek
-    weight: 1100
+    weight: 550
   - from: hausmeister
     to: keller
-    weight: 200
+    weight: 100
   - from: bibliothek
     to: ziel
-    weight: 600
+    weight: 300
   - from: keller
     to: ziel
-    weight: 900
+    weight: 450

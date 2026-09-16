@@ -97,11 +97,18 @@ und `entryText` von B zusammen. In Gegenrichtung verwendet es entsprechend den
 Ausgangstext von B und den Eingangstext von A. Kanten-IDs werden beim
 Serverstart automatisch aus der Reihenfolge erzeugt; das Gewicht je Richtung
 ist standardmäßig die Textlänge, kann aber pro Kante mit dem optionalen Feld
-`weight` überschrieben werden (z. B. um ein Lehrbuchbeispiel mit festen,
-richtungsunabhängigen Gewichten nachzubauen, ohne den Fließtext exakt auf eine
-Zeichenzahl trimmen zu müssen). Damit lassen sich ohne Änderungen an HTML oder
-Python andere ungerichtete Netze aufbauen. Nach Änderungen an der YAML-Datei
-Flask neu starten.
+`weight` überschrieben werden. Das ist mehr als nur Komfort: Sobald ein Knoten
+sowohl eine direkte Kante als auch einen Umweg über einen Nachbarn zum selben
+Ziel hat, kann der Umweg unter reiner Textlängen-Gewichtung nie günstiger sein
+als die direkte Kante (der Umweg trägt zusätzlich noch die – nicht negative –
+Textlänge des Zwischenknotens). Ein Graph, der eine echte Dijkstra-Relaxation
+zeigen soll, braucht also so gut wie immer `weight`. Die Anzeige läuft davon
+unabhängig: Der Fließtext wird über die gesamte Kantendauer hinweg proportional
+eingeblendet, unabhängig davon, wie lang der Text im Verhältnis zum Gewicht
+ist – kurzer Text auf einer teuren Kante wird langsam getippt, langer Text auf
+einer günstigen Kante endet trotzdem exakt bei der Ankunft. Damit lassen sich
+ohne Änderungen an HTML oder Python andere ungerichtete Netze aufbauen. Nach
+Änderungen an der YAML-Datei Flask neu starten.
 
 Die Aktualisierungsrate lässt sich optional ändern:
 

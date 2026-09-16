@@ -117,7 +117,7 @@ for index, edge in enumerate(GAME_DATA["edges"]):
 EDGES = {edge["id"]: edge for edge in GAME_DATA["edges"]}
 ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 PLAYER_TTL = 25
-TICK_SECONDS = float(os.getenv("GAME_TICK_SECONDS", "0.045"))
+TICK_SECONDS = float(os.getenv("GAME_TICK_SECONDS", "0.13"))
 BROADCAST_STEPS = max(1, int(os.getenv("GAME_BROADCAST_STEPS", "10")))
 GAME_DATA["playback"] = {
     "tickMilliseconds": round(TICK_SECONDS * 1000),
