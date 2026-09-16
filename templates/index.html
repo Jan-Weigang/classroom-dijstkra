@@ -105,6 +105,7 @@
   .route-node.here{fill:var(--brass);stroke:var(--paper);stroke-width:3}
   .route-node-label{font-family:var(--font-num);font-size:11px;fill:var(--text);text-anchor:middle;dominant-baseline:central;pointer-events:none}
   .route-node-label.here{fill:#20180a;font-weight:700}
+  .route-node-name{font-family:var(--font-ui);font-size:11px;font-weight:600;fill:var(--paper);text-anchor:middle;pointer-events:none}
   table.sheet{width:100%;border-collapse:collapse;font-size:.85rem}
   table.sheet th,table.sheet td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left}
   table.sheet th{color:var(--muted);font-weight:500;font-size:.72rem}
@@ -491,7 +492,7 @@ async function startStudent(room,name){
       $("s_blurb").textContent=GRAPH.nodes[me.node].blurb||"";
       $("s_statusText").textContent="";
       $("s_stopBanner").classList.add("show");
-      $("s_stopBanner").textContent="Im Gang vor dir ist "+bestName+" bereits unterwegs. Zu spät – der Donut ist weg. Dein Weg dauerte "+formatSeconds(me.cost)+" Sekunden; in der Tabelle steht bereits "+formatSeconds(best)+".";
+      $("s_stopBanner").textContent="Zu spät – der Donut ist weg. Du hast "+bestName+" um "+formatSeconds(me.cost-best)+" Sekunden verpasst. Viel Glück beim nächsten Mal.";
       $("s_winBanner").classList.remove("show");
       $("s_choices").innerHTML="";
     }
@@ -534,6 +535,8 @@ function renderStudentMap(here,path,currentEdge,board){
     el("circle",{cx:n.x,cy:n.y,r:R,class:"route-node"+(isHere?" here":visited?" visited":"")},nL);
     const label=el("text",{x:n.x,y:n.y,class:"route-node-label"+(isHere?" here":"")},nL);
     label.textContent=visited?formatSeconds(dist):"∞";
+    const nameLabel=el("text",{x:n.x,y:n.y+R+14,class:"route-node-name"},nL);
+    nameLabel.textContent=n.short||n.name;
   });
 }
 </script>

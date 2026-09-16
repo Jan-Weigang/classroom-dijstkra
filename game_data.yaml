@@ -59,6 +59,16 @@ nodes:
       Du stößt dich vom eiskalten Geländer ab und verschwindest durch den
       nächsten schmalen Durchgang.
 
+  pausenhalle:
+    name: Die Pausenhalle
+    short: Halle
+    blurb: Der Knotenpunkt der Schule. Hier laufen alle Wege zusammen.
+    entryText: >-
+      Du stehst mitten in der belebten Pausenhalle, umgeben von
+      Stimmengewirr.
+    exitText: >-
+      Du schlängelst dich durch die Menge und bist schon wieder unterwegs.
+
   ziel:
     goal: true
     name: Die Theke – der letzte Donut
@@ -94,6 +104,18 @@ nodes:
 # negative) Textlänge des Zwischenknotens selbst trägt. Das `extra`-Feld ist
 # pro Kante frei wählbar und unabhängig von den Knotentexten, daher lässt
 # sich damit trotzdem eine echte Dijkstra-Relaxation abbilden.
+#
+# `pausenhalle` ist ein zusätzlicher Knotenpunkt (an ziel, bibliothek,
+# hausmeister und keller angebunden) mit bewusst kurzen Texten. Weil Kosten
+# in diesem Spiel exakt der Simulationszeit entsprechen, kommt eine
+# Tabellen-Aktualisierung (ein bereits eingetragener Wert wird durch einen
+# besseren ersetzt) hier nie vor - wer zuerst ankommt, hat zwangsläufig den
+# günstigsten bekannten Weg genommen. Die eigentliche Dijkstra-Pointe
+# ("mehr, aber günstigere Stationen schlagen wenige teure") zeigt sich
+# stattdessen im Vergleich zwischen Schüler:innen: der Weg über die
+# Pausenhalle (start-hausmeister-keller-pausenhalle-ziel, 4 Stationen)
+# schlägt sowohl den direkten 2-Stationen-Weg (start-keller-ziel) als auch
+# den vorherigen 3-Stationen-Bestweg (start-hausmeister-keller-ziel) klar.
 edges:
   - from: start
     to: lehrer
@@ -169,3 +191,30 @@ edges:
       alten Werkzeugschrank, dessen Tür seit Jahren klemmt, dann durch die
       unscheinbare Tür mit dem Schild „Nur für Personal“, die
       überraschenderweise direkt hinter der Cafeteria-Theke herauskommt.
+  - from: pausenhalle
+    to: keller
+    extra: >-
+      Die Treppe zum Keller liegt direkt neben dem Ausgang der Pausenhalle.
+  - from: pausenhalle
+    to: ziel
+    extra: >-
+      Die Cafeteria-Theke ist nur einen Sprung von der Pausenhalle
+      entfernt.
+  - from: pausenhalle
+    to: hausmeister
+    extra: >-
+      Der Weg von der Pausenhalle zur Hausmeisterei führt einmal komplett
+      um den Innenhof herum, vorbei an der Fahrradgarage und dem Lager für
+      die Sportgeräte, die gerade jemand mühsam zurück in den Schuppen
+      räumt, und weiter über den kleinen Umweg durch die verlassene alte
+      Turnhalle, in der seit Jahren nur noch kaputte Matten und ein
+      einsamer Kasten stehen, bevor die vertraute Tür mit dem Schild
+      „Hausmeisterei“ endlich auftaucht.
+  - from: pausenhalle
+    to: bibliothek
+    extra: >-
+      Von der Pausenhalle zur Bibliothek geht es über die Galerie mit
+      Blick auf die Aula, vorbei an der Anschlagtafel mit den
+      Vertretungsplänen, die heute wieder komplett überklebt ist, bis die
+      schwere Holztür mit der Aufschrift „Bibliothek – bitte leise“
+      auftaucht.
