@@ -84,25 +84,17 @@ edges:
       Du scannst die drei möglichen Routen wie einen Fluchtplan,
       kalkulierst kurz die Chancen gegen die Konkurrenz und legst
       blitzschnell los. Der direkte Weg zum NW-Trakt führt über eine
-      improvisierte Hürdenstrecke aus Schulranzen, die eine ganze Klasse
-      mitten im Flur liegen gelassen hat; beim Sprung über den letzten
-      Ranzen verlierst du das Gleichgewicht und schlägst dir hart das Knie
-      auf. Der Schulsanitätsdienst ist sofort zur Stelle – zwei
-      Fünftklässler mit Verbandskasten und grimmiger Entschlossenheit –,
-      doch bevor sie auch nur ein Pflaster auspacken dürfen, muss erst ein
-      dreiseitiges Unfallprotokoll ausgefüllt werden, während die beiden
-      Sanitäter sich zudem nicht einig sind, ob es ein „Sportunfall“ oder
-      ein „sonstiger Unfall“ war. Du lässt sie streiten, nimmst die Treppe
-      zwei Stufen auf einmal nach oben und stehst, noch etwas humpelnd, im
-      NW-Trakt.
+      Hürdenstrecke aus liegen gelassenen Schulranzen; beim letzten
+      Sprung verlierst du das Gleichgewicht und schlägst dir das Knie
+      auf. Der Schulsanitätsdienst eilt herbei und streitet sofort, ob
+      „Sportunfall“ oder „sonstiger Unfall“. Du lässt sie streiten und
+      läufst hinauf in den NW-Trakt.
     backwardText: >-
-      Du lässt den Streit der beiden Sanitäter über „Sportunfall“ oder
-      „sonstiger Unfall“ hinter dir, nimmst die Treppe nach unten –
-      diesmal vorsichtiger – und kassierst am Fuß der Stufen trotzdem
-      einen Schlag ans Schienbein von der immer noch herumliegenden
-      Hürdenstrecke aus Schulranzen. Du bist zurück am Ausgangspunkt. Die
-      Cafeteria-Uhr tickt wie ein Countdown, die Pausenglocke lauert
-      bedrohlich nah, und irgendwo klappert schon das erste Tablett.
+      Du lässt den Streit der Sanitäter über „Sportunfall“ oder
+      „sonstiger Unfall“ hinter dir, nimmst die Treppe nach unten und
+      stolperst am Fuß noch einmal über die herumliegenden Schulranzen.
+      Du bist zurück am Ausgangspunkt. Die Cafeteria-Uhr tickt, die
+      Pausenglocke lauert bedrohlich nah.
   - from: start
     to: bibliothek
     forwardText: >-
@@ -148,18 +140,12 @@ edges:
   - from: nw_trakt
     to: hof
     forwardText: >-
-      Der Schulsanitätsdienst streitet immer noch über „Sportunfall“ oder
-      „sonstiger Unfall“, als du dich unbemerkt in den nächsten
-      Physikraum flüchtest. Herr Dr. Kessler, hochmotivierter
-      Physiklehrer, sieht sofort eine Gelegenheit für den „Fallversuch“,
-      schnallt dich ohne weitere Diskussion in einen selbstgenähten
-      Fallschirm und wirft dich kurzerhand aus dem Fenster – du landest,
-      reichlich unsanft, mitten auf dem Hof.
+      Herr Dr. Kessler sieht seine Chance, schnallt dich in einen
+      Fallschirm und wirft dich aus dem Fenster – direkt auf den Hof.
     backwardText: >-
       Herr Dr. Kessler winkt dir vom Fenster aus fröhlich zu – „Nächster
       Testflug gefällig?“ – doch du schüttelst den Kopf und kletterst
-      stattdessen brav die Treppe zurück hoch in den NW-Trakt, wo der
-      Streit der Sanitäter noch immer nicht entschieden ist.
+      stattdessen brav die Treppe zurück hoch in den NW-Trakt.
   - from: nw_trakt
     to: bibliothek
     forwardText: >-
@@ -178,14 +164,22 @@ edges:
     to: ziel
     forwardText: >-
       Um dich herum werden reihenweise Mitschüler von Haargummis
-      abgeschossen, einer nach dem anderen, wie am D-Day; unter lautem
-      ZWIIING-ZWIIING-ZWIIING kämpfst du dich geduckt durch die
-      Regalreihen und schaffst es, mit einem letzten Hechtsprung durch die
-      Tür, hinaus zur Cafeteria-Theke.
+      abgeschossen, einer nach dem anderen, wie am D-Day; die Luft ist
+      erfüllt von einem ununterbrochenen ZWIIING-ZWIIING-ZWIIING,
+      Regalbretter splittern, aufgeschlagene Bücher fliegen wie Schrapnell
+      durch die Gänge, und irgendwo ruft jemand dramatisch „Mann runter!“,
+      obwohl es nur ein Gummiband war. Du wirfst dich hinter ein
+      umgekipptes Bücherregal, robbst geduckt weiter, springst über einen
+      wimmernden Fünftklässler hinweg, der sich mitten im Gang
+      verschanzt hat, und erreichst, das Herz bis zum Hals schlagend,
+      endlich die Tür – mit einem letzten, filmreifen Hechtsprung wirfst
+      du dich hindurch, hinaus zur rettenden Cafeteria-Theke, während
+      hinter dir das Gefecht unvermindert weitergeht.
     backwardText: >-
       Mit dem Donut sicher in der Hand kämpfst du dich noch einmal zurück
-      durch das ZWIIING-Kreuzfeuer der Regalreihen, tief geduckt, zurück
-      in die Bibliothek, wo die Schlacht unvermindert weitergeht.
+      durch das ZWIIING-Kreuzfeuer der Regalreihen, tief geduckt, an
+      splitternden Regalbrettern vorbei, zurück in die Bibliothek, wo die
+      Schlacht unvermindert weitergeht.
   - from: bibliothek
     to: hof
     forwardText: >-
