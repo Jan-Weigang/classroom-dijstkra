@@ -64,12 +64,14 @@ edges:
       kalkulierst kurz die Chancen gegen die Konkurrenz und legst
       blitzschnell los. Der Weg zur Sporthalle führt direkt an Hausmeister
       Brzenskas Kontrollposten vorbei; er verlangt wortlos deinen
-      Schülerausweis, dreht ihn zweimal im Licht, stempelt ihn gleich
-      dreimal und mustert dich mit zusammengekniffenen Augen, bevor er
-      dich endlich durch die schwere Tür zur Halle winkt. Du stolperst
-      mitten in ein tobendes Völkerballspiel; gleich drei Bälle fliegen
-      synchron auf dich zu, und irgendjemand brüllt begeistert deinen
-      Namen.
+      Schülerausweis, dreht ihn zweimal im Licht, vergleicht ihn mit
+      einer Liste, die eindeutig nicht für dich gedacht ist, stempelt ihn
+      gleich dreimal und mustert dich mit zusammengekniffenen Augen,
+      bevor er dich endlich – mit einem letzten, missbilligenden
+      Kopfschütteln – durch die schwere Tür zur Halle winkt. Du
+      stolperst mitten in ein tobendes Völkerballspiel; gleich drei
+      Bälle fliegen synchron auf dich zu, irgendjemand brüllt begeistert
+      deinen Namen, und der Sportlehrer pfeift bereits wieder los.
     backwardText: >-
       Du duckst dich unter dem letzten Wurf weg, hechtest im Slalom um
       zwei Mitspieler und wirfst dich zur rettenden Seitentür hinaus.
@@ -85,16 +87,21 @@ edges:
       kalkulierst kurz die Chancen gegen die Konkurrenz und legst
       blitzschnell los. Der direkte Weg zum NW-Trakt führt über eine
       Hürdenstrecke aus liegen gelassenen Schulranzen; beim letzten
-      Sprung verlierst du das Gleichgewicht und schlägst dir das Knie
-      auf. Der Schulsanitätsdienst eilt herbei und streitet sofort, ob
-      „Sportunfall“ oder „sonstiger Unfall“. Du lässt sie streiten und
-      läufst hinauf in den NW-Trakt.
+      Sprung verlierst du das Gleichgewicht und schlägst dir hart das
+      Knie auf. Der Schulsanitätsdienst ist sofort zur Stelle – zwei
+      Fünftklässler mit Verbandskasten und grimmiger Entschlossenheit –,
+      doch bevor sie ein Pflaster auspacken dürfen, muss erst ein
+      dreiseitiges Unfallprotokoll ausgefüllt werden, während die beiden
+      sich zudem nicht einig sind, ob es ein „Sportunfall“ oder ein
+      „sonstiger Unfall“ war. Du lässt sie streiten und humpelst die
+      Treppe hinauf in den NW-Trakt.
     backwardText: >-
-      Du lässt den Streit der Sanitäter über „Sportunfall“ oder
-      „sonstiger Unfall“ hinter dir, nimmst die Treppe nach unten und
-      stolperst am Fuß noch einmal über die herumliegenden Schulranzen.
-      Du bist zurück am Ausgangspunkt. Die Cafeteria-Uhr tickt, die
-      Pausenglocke lauert bedrohlich nah.
+      Du lässt den Streit der beiden Sanitäter über „Sportunfall“ oder
+      „sonstiger Unfall“ hinter dir, nimmst die Treppe nach unten –
+      diesmal vorsichtiger – und kassierst am Fuß der Stufen trotzdem
+      einen Schlag ans Schienbein von der immer noch herumliegenden
+      Hürdenstrecke aus Schulranzen. Du bist zurück am Ausgangspunkt.
+      Die Cafeteria-Uhr tickt, die Pausenglocke lauert bedrohlich nah.
   - from: start
     to: bibliothek
     forwardText: >-
@@ -104,57 +111,84 @@ edges:
       hinunter, vorbei an vergilbten Aushängen und einem Stapel
       ausrangierter Stühle, bis du unten vor der schweren Tür mit dem
       Schild „Bibliothek – bitte leise“ stehst und sie so lautlos wie
-      möglich öffnest. Die Bibliothekarin bewegt sich lautlos wie eine
-      Spezialeinheit zwischen den Regalen, Zwille im Anschlag, und du
-      hältst instinktiv den Atem an.
+      möglich öffnest. Drinnen bewegt sich die Bibliothekarin lautlos wie
+      eine Spezialeinheit zwischen den Regalen, die Haargummi-Zwille im
+      Anschlag, das eine Auge zusammengekniffen, als würde sie jeden
+      Moment Feuer eröffnen, und du hältst instinktiv den Atem an,
+      während irgendwo leise ein Buchrücken verdächtig knarzt und eine
+      Lampe flackert.
     backwardText: >-
       Du schleichst rückwärts aus der Bibliothek, ein Haargummi schnalzt
-      dir noch hinterher, und nimmst die schmale Treppe wieder nach oben,
-      zwei Stufen auf einmal. Du bist zurück am Ausgangspunkt. Die
-      Cafeteria-Uhr tickt wie ein Countdown, die Pausenglocke lauert
+      dir noch knapp am Ohr vorbei, und nimmst die schmale Treppe wieder
+      nach oben, zwei Stufen auf einmal. Du bist zurück am Ausgangspunkt.
+      Die Cafeteria-Uhr tickt wie ein Countdown, die Pausenglocke lauert
       bedrohlich nah, und irgendwo klappert schon das erste Tablett.
   - from: sporthalle
     to: hof
     forwardText: >-
-      Du duckst dich unter einem Ball weg, hechtest zur Seite, duckst dich
-      unter dem nächsten – dreimal, viermal – und wirfst dich im letzten
+      Du duckst dich unter einem Ball weg, hechtest zur Seite, duckst
+      dich unter dem nächsten – dreimal, viermal, ein ganzes
+      Trommelfeuer –, hörst hinter dir die Pfeife des Sportlehrers
+      schrillen, springst über einen am Boden liegenden Mitspieler
+      hinweg, täuschst noch kurz nach links, rutschst über die Ziellinie
+      eines fremden Spielfelds, hörst noch, wie jemand „Foul!“ brüllt,
+      obwohl das Spiel längst vorbei ist, und wirfst dich im allerletzten
       Moment durch die Seitentür, gerade so ungetroffen, hinaus auf den
       Hof.
     backwardText: >-
       Du drückst dich noch einmal durch dieselbe Seitentür zurück in die
       Sporthalle – und stehst prompt wieder mitten in einem neuen Anwurf,
-      drei Bälle gleichzeitig im Anflug.
+      drei Bälle gleichzeitig im Anflug, während der Sportlehrer schon
+      wieder in seine Pfeife bläst.
   - from: sporthalle
     to: ziel
     forwardText: >-
       Mit einem letzten, spektakulären Wurf triffst du den letzten
-      Gegner – das Spiel ist gewonnen! Deine Mitspieler jubeln, kapern
-      kurzerhand den Mattenwagen aus der Ecke, hieven dich hinauf, hissen
-      eine Piratenflagge aus einem Handtuch, und im Triumphzug rollst du,
-      laut skandiert, direkt zur Cafeteria-Theke.
+      Gegner – das Spiel ist gewonnen! Die ganze Halle tobt, Mitspieler
+      springen dir jubelnd auf den Rücken, jemand wirft dir eine
+      Trainingsjacke wie einen Umhang über die Schultern, und im nächsten
+      Moment kapern deine Teamkollegen kurzerhand den Mattenwagen aus der
+      Ecke, hieven dich triumphal hinauf, hissen eine Piratenflagge aus
+      einem geklauten Handtuch, und unter lautem Sprechchor – „Do-nut!
+      Do-nut!“ – rollst du wie ein siegreicher Feldherr quer durch die
+      halbe Halle, vorbei am fassungslosen Schiedsrichter und dem
+      kopfschüttelnden Hausmeister, eine ganze Ehrenrunde lang, direkt
+      zur Cafeteria-Theke, während irgendwo noch jemand versucht, die
+      Piratenflagge geradezuhängen, ein Erstklässler dir spontan eine
+      selbstgebastelte Medaille aus Alufolie um den Hals hängt, und die
+      komplette gegnerische Mannschaft dir, sportlich wie enttäuscht
+      zugleich, im Vorbeirollen artig applaudiert.
     backwardText: >-
       Mit dem Donut sicher in der Hand lässt du dich vom Mattenwagen
-      herunter und gehst, angefeuert von entfernten Jubelrufen, noch
-      einmal zurück in die Sporthalle, wo bereits das nächste Spiel
-      begonnen hat.
+      herunter, winkst noch einmal in die jubelnde Menge, und gehst,
+      angefeuert von entfernten Sprechchören, zurück in die Sporthalle,
+      wo bereits das nächste Spiel in vollem Gange ist.
   - from: nw_trakt
     to: hof
     forwardText: >-
-      Herr Dr. Kessler sieht seine Chance, schnallt dich in einen
-      Fallschirm und wirft dich aus dem Fenster – direkt auf den Hof.
+      Der Schulsanitätsdienst streitet immer noch über „Sportunfall“
+      oder „sonstiger Unfall“, als du dich unbemerkt in den nächsten
+      Physikraum flüchtest. Herr Dr. Kessler, hochmotivierter
+      Physiklehrer, sieht sofort eine Gelegenheit für den „Fallversuch“,
+      schnallt dich ohne weitere Diskussion in einen selbstgenähten
+      Fallschirm und wirft dich kurzerhand aus dem Fenster – du landest,
+      reichlich unsanft, mitten auf dem Hof.
     backwardText: >-
       Herr Dr. Kessler winkt dir vom Fenster aus fröhlich zu – „Nächster
       Testflug gefällig?“ – doch du schüttelst den Kopf und kletterst
-      stattdessen brav die Treppe zurück hoch in den NW-Trakt.
+      stattdessen brav die Treppe zurück hoch in den NW-Trakt, wo der
+      Streit der Sanitäter noch immer nicht entschieden ist.
   - from: nw_trakt
     to: bibliothek
     forwardText: >-
-      Du nutzt den Streit der Sanitäter über die richtige Unfallkategorie
-      aus, murmelst etwas von „ich hol schnell die Unterschrift der
-      Klassenleitung“ und schleppst dich, das Knie noch schmerzend, über
-      die Hintertreppe direkt in die Bibliothek. Die Bibliothekarin bewegt
-      sich lautlos wie eine Spezialeinheit zwischen den Regalen, Zwille im
-      Anschlag, und du hältst instinktiv den Atem an.
+      Du nutzt den anhaltenden Streit der Sanitäter über die richtige
+      Unfallkategorie schamlos aus, murmelst etwas von „ich hol schnell
+      die Unterschrift der Klassenleitung“ und schleppst dich, das Knie
+      noch schmerzend, über die Hintertreppe direkt in die Bibliothek.
+      Drinnen bewegt sich die Bibliothekarin lautlos wie eine
+      Spezialeinheit zwischen den Regalen, die Zwille im Anschlag, und du
+      hältst instinktiv den Atem an, während irgendwo leise ein
+      Buchrücken knarzt.
     backwardText: >-
       Du schleichst dich aus der Bibliothek und die Hintertreppe wieder
       hoch, an der Bibliothekarin vorbei, die dich mit zusammengekniffenen
@@ -167,39 +201,51 @@ edges:
       abgeschossen, einer nach dem anderen, wie am D-Day; die Luft ist
       erfüllt von einem ununterbrochenen ZWIIING-ZWIIING-ZWIIING,
       Regalbretter splittern, aufgeschlagene Bücher fliegen wie Schrapnell
-      durch die Gänge, und irgendwo ruft jemand dramatisch „Mann runter!“,
+      durch die Gänge, ein Stapel Karteikarten regnet wie Konfetti auf
+      den Boden, und irgendwo ruft jemand dramatisch „Mann runter!“,
       obwohl es nur ein Gummiband war. Du wirfst dich hinter ein
       umgekipptes Bücherregal, robbst geduckt weiter, springst über einen
-      wimmernden Fünftklässler hinweg, der sich mitten im Gang
-      verschanzt hat, und erreichst, das Herz bis zum Hals schlagend,
-      endlich die Tür – mit einem letzten, filmreifen Hechtsprung wirfst
-      du dich hindurch, hinaus zur rettenden Cafeteria-Theke, während
-      hinter dir das Gefecht unvermindert weitergeht.
+      wimmernden Fünftklässler hinweg, der sich mitten im Gang verschanzt
+      hat, rutschst auf einem verlorenen Lesezeichen aus, fängst dich
+      gerade noch, kriechst an einer ganzen Reihe fallender
+      Nachschlagewerke vorbei, und erreichst, das Herz bis zum Hals
+      schlagend, endlich die Tür – mit einem letzten, filmreifen
+      Hechtsprung wirfst du dich hindurch, hinaus zur rettenden
+      Cafeteria-Theke, während hinter dir das Gefecht unvermindert
+      weitergeht und die Bibliothekarin schon nachlädt.
     backwardText: >-
       Mit dem Donut sicher in der Hand kämpfst du dich noch einmal zurück
       durch das ZWIIING-Kreuzfeuer der Regalreihen, tief geduckt, an
-      splitternden Regalbrettern vorbei, zurück in die Bibliothek, wo die
-      Schlacht unvermindert weitergeht.
+      splitternden Regalbrettern und verstreuten Karteikarten vorbei,
+      zurück in die Bibliothek, wo die Schlacht unvermindert weitergeht
+      und die Bibliothekarin bereits nachlädt.
   - from: bibliothek
     to: hof
     forwardText: >-
       Ein Buch rutscht dir aus der Hand und klatscht viel zu laut auf den
-      Boden – die Bibliothekarin fährt herum, Zwille bereits gespannt, und
-      du bist plötzlich selbst das Ziel. Du hechtest zur nächsten Tür und
-      flüchtest hinaus auf den Hof, ein Haargummi schnalzt noch knapp an
-      deinem Ohr vorbei.
+      Boden – die Bibliothekarin fährt herum, Zwille bereits gespannt,
+      ein Auge zusammengekniffen, und du bist plötzlich selbst das Ziel.
+      Du hechtest geduckt zwischen zwei Regalreihen hindurch, kassierst
+      im Vorbeilaufen noch ein Haargummi knapp am Ohr, stößt die nächste
+      Tür mit der Schulter auf, rutschst fast auf dem frisch gewischten
+      Flurboden aus, hörst hinter dir noch ein zweites, drittes Haargummi
+      surren, und flüchtest, leicht außer Atem, hinaus auf den Hof.
     backwardText: >-
       Du schleichst zurück durch dieselbe Tür in die Bibliothek, in der
       Hoffnung, dass die Bibliothekarin dich diesmal übersieht – die
-      Zwille ist noch gespannt, aber sie zielt gerade woanders hin.
+      Zwille ist noch gespannt, aber sie zielt gerade, mit stoischer
+      Miene, in eine ganz andere Richtung.
   - from: hof
     to: ziel
     forwardText: >-
       Am Wasserspender blockiert eine ganze Traube Drittklässler das
-      kniffelige Rätsel-Schloss. Du flüsterst ihnen knapp die Lösung zu,
-      drückst für sie den Knopf, und schlüpfst rasch weiter zur
-      Cafeteria-Theke.
+      kniffelige Rätsel-Schloss, das sich erst nach der richtigen Lösung
+      öffnen lässt; einer behauptet steif und fest, die Lösung sei
+      „einfach dreimal husten“, ein anderer widerspricht lautstark. Du
+      flüsterst ihnen knapp die echte Lösung zu, drückst für sie noch den
+      Knopf, erntest einen kollektiven Freudenschrei und schlüpfst rasch
+      weiter zur Cafeteria-Theke.
     backwardText: >-
       Mit dem Donut sicher in der Hand drehst du dich noch einmal um und
       schlenderst zurück zum Hof, wo dich die Drittklässler am
-      Wasserspender bereits dankbar erwarten.
+      Wasserspender bereits erwartungsvoll und ziemlich dankbar erwarten.
