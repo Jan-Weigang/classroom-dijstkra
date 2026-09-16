@@ -15,20 +15,20 @@ nodes:
     short: Sport.
     blurb: Bälle fliegen, Pfeifen schrillen – und mittendrin ein strenger Blick.
 
+  nw_trakt:
+    name: Der NW-Trakt
+    short: NW-Trakt
+    blurb: Chemiegeruch, Streit im Gang, und irgendwo ein aufgeregter Lehrer.
+
   bibliothek:
     name: Die Bibliothek
     short: Biblio.
     blurb: Angeblich der leiseste Ort der Schule. Angeblich.
 
-  nw_trakt:
-    name: Der NW-Trakt
-    short: NW-Trakt
-    blurb: Kühl, eng, kurz. Fast zu praktisch.
-
-  pausenhalle:
-    name: Die Pausenhalle
-    short: Halle
-    blurb: Der Knotenpunkt der Schule. Hier laufen alle Wege zusammen.
+  hof:
+    name: Der Hof
+    short: Hof
+    blurb: Frische Luft, viel Platz – und ein Gerät, das Rätsel liebt.
 
   ziel:
     goal: true
@@ -36,44 +36,26 @@ nodes:
     short: Theke
     blurb: Ein Spotlight, ein Donut – die Frage ist nur, wessen Hand ihn schon hält.
 
-# Topologie basierte ursprünglich auf dem bekannten Wikipedia-Beispielgraphen
-# zu Dijkstras Algorithmus (Knoten 1-6), inzwischen um Pausenhalle erweitert
-# und um Lehrer wieder verkleinert, um die Zahl der im Spiel überhaupt
-# möglichen Wege auf ein für eine Klasse sinnvolles Maß zu bringen (37 -> 23
-# mögliche Wege insgesamt, davon 10 zum Ziel).
+# Der Text (und damit das Gewicht) lebt vollständig auf den Kanten: jede
+# Kante trägt ein eigenständiges `forwardText` (von -> zu) und
+# `backwardText` (zu -> von), Gewicht = Textlänge. Es gibt bewusst keine
+# Knotentexte (entryText/exitText) - Knoten tragen nur Anzeigefelder
+# (name/short/blurb/intro), nie gewichtsrelevanten Text. Das hält jede
+# Kante vollständig unabhängig von jeder anderen.
 #
-# Der Text (und damit das Gewicht) lebt komplett auf den Kanten: jede Kante
-# trägt ein eigenständiges `forwardText` (von -> zu) und `backwardText`
-# (zu -> von), Gewicht = Textlänge. Es gibt bewusst keine Knotentexte
-# (entryText/exitText) mehr, die frühere Variante setzte den abgespielten
-# Text aus Knotentext + optionalem Kantenzusatz zusammen - das führte
-# einerseits zu Dopplungen (derselbe Satz tauchte auf mehreren Kanten auf,
-# die denselben Knoten berühren), andererseits war es semantisch unsauber:
-# derselbe Kantenzusatz wurde für beide Richtungen wiederverwendet, obwohl
-# er inhaltlich oft nur in einer Richtung Sinn ergab. Mit eigenständigem
-# Text pro Kante und Richtung ist beides behoben, und nebenbei entfällt
-# auch die alte Einschränkung, dass ein Umweg über einen Zwischenknoten nie
-# günstiger sein konnte als eine direkte Kante (das war zwingend, solange
-# Knotentext von mehreren Kanten gemeinsam genutzt wurde) - jede Kante ist
-# jetzt vollständig frei wählbar.
+# Knotennamen sind bewusst neutral (Ort, nicht Figur/Ereignis) - „Sporthalle“
+# statt „Hausmeister“, „NW-Trakt“ statt „Keller“, „Hof“ statt irgendeiner
+# Anspielung auf den Wasserspender -, damit der Graph selbst nichts von der
+# Story verrät. Die verrät sich ausschließlich über den gelesenen Text.
 #
-# `pausenhalle` hat weiterhin bewusst kurze Kantentexte - das ist tragend
-# für die Waage: jede Verlängerung an anderer Stelle braucht eine erneute
-# Prüfung, ob die Marge zur direkten Route noch hält. Weil Kosten in diesem
-# Spiel exakt der Simulationszeit entsprechen, kommt eine
-# Tabellen-Aktualisierung (ein bereits eingetragener Wert wird durch einen
-# besseren ersetzt) hier nie vor - wer zuerst ankommt, hat zwangsläufig den
-# günstigsten bekannten Weg genommen. Die eigentliche Dijkstra-Pointe
-# ("mehr, aber günstigere Stationen schlagen wenige teure") zeigt sich
-# stattdessen im Vergleich zwischen Schüler:innen: der Weg über die
-# Pausenhalle (start-sporthalle-nw_trakt-pausenhalle-ziel, 4 Stationen)
-# schlägt sowohl den direkten 2-Stationen-Weg (start-nw_trakt-ziel) als auch
-# den vorherigen 3-Stationen-Bestweg (start-sporthalle-nw_trakt-ziel) klar.
-#
-# Knotennamen sind bewusst neutral (Ort, nicht Figur/Ereignis): „Sporthalle“
-# statt „Hausmeister“, „NW-Trakt“ statt „Keller“, damit der Graph selbst
-# nichts von der Story verrät - die verrät sich ausschließlich über den
-# gelesenen Text.
+# Wiederkehrende Figuren/Motive ziehen sich über mehrere Kanten: Hausmeister
+# Brzenska (Start-Sporthalle), der Streit des Schulsanitätsdienstes über
+# „Sportunfall“ vs. „sonstiger Unfall“ (Start-NW-Trakt, dort begonnen und in
+# NW-Trakt-Hof sowie NW-Trakt-Bibliothek aufgegriffen), Herr Dr. Kessels
+# Fallschirm-„Fallversuch“ (NW-Trakt-Hof), die als Spezialeinheit agierende
+# Bibliothekarin mit ihrer Haargummi-Zwille (Start-Bibliothek,
+# NW-Trakt-Bibliothek, Bibliothek-Ziel, Bibliothek-Hof) und das
+# Rätsel-Schloss am Wasserspender (Hof-Ziel).
 edges:
   - from: start
     to: sporthalle
@@ -108,132 +90,122 @@ edges:
       auf. Der Schulsanitätsdienst ist sofort zur Stelle – zwei
       Fünftklässler mit Verbandskasten und grimmiger Entschlossenheit –,
       doch bevor sie auch nur ein Pflaster auspacken dürfen, muss erst ein
-      dreiseitiges Unfallprotokoll ausgefüllt werden, mit Durchschlag,
-      Unterschrift der Klassenleitung und einer Skizze des Tathergangs,
-      während die beiden Sanitäter sich zudem nicht einig sind, ob es ein
-      „Sportunfall“ oder ein „sonstiger Unfall“ war, und die Minuten bis
-      zum Pausenende ungerührt weiterlaufen. Du erreichst die kühle
-      Kellertreppe des NW-Trakts und nimmst die letzten Stufen mit einem
-      einzigen großen, leicht zu forschen Satz.
+      dreiseitiges Unfallprotokoll ausgefüllt werden, während die beiden
+      Sanitäter sich zudem nicht einig sind, ob es ein „Sportunfall“ oder
+      ein „sonstiger Unfall“ war. Du lässt sie streiten, nimmst die Treppe
+      zwei Stufen auf einmal nach oben und stehst, noch etwas humpelnd, im
+      NW-Trakt.
     backwardText: >-
-      Du stößt dich vom eiskalten Geländer ab, wischst dir den Staub von
-      den Händen und verschwindest durch den nächsten schmalen Durchgang.
-      Der Rückweg führt über dieselbe Hürdenstrecke aus Schulranzen –
-      diesmal springst du vorsichtiger, kassierst aber trotzdem einen
-      Schlag ans Schienbein, während die nächste Klasse schon ungeduldig
-      wartet. Du bist zurück am Ausgangspunkt. Die Cafeteria-Uhr tickt wie
-      ein Countdown, die Pausenglocke lauert bedrohlich nah, und irgendwo
-      klappert schon das erste Tablett.
-  - from: sporthalle
+      Du lässt den Streit der beiden Sanitäter über „Sportunfall“ oder
+      „sonstiger Unfall“ hinter dir, nimmst die Treppe nach unten –
+      diesmal vorsichtiger – und kassierst am Fuß der Stufen trotzdem
+      einen Schlag ans Schienbein von der immer noch herumliegenden
+      Hürdenstrecke aus Schulranzen. Du bist zurück am Ausgangspunkt. Die
+      Cafeteria-Uhr tickt wie ein Countdown, die Pausenglocke lauert
+      bedrohlich nah, und irgendwo klappert schon das erste Tablett.
+  - from: start
     to: bibliothek
     forwardText: >-
-      Du duckst dich unter dem letzten Wurf weg, hechtest im Slalom um
-      zwei Mitspieler und wirfst dich zur rettenden Seitentür hinaus. Der
-      Weg führt über den Hinterflur, vorbei am Lager mit den Ersatzstühlen
-      und einem Stapel alter Wandkarten, die niemand mehr braucht, dann
-      eine kurze Treppe hoch, an der Schulküche vorbei, aus der es
-      intensiv nach angebranntem Toast riecht, und schließlich durch die
-      unscheinbare Seitentür, die direkt in die Bibliothek führt, vorbei
-      am frisch aufgehängten Plakat für die nächste Buchausstellung. Die
-      Bibliothekarin bewegt sich lautlos wie eine Spezialeinheit zwischen
-      den Regalen, Zwille im Anschlag, und du hältst instinktiv den Atem
-      an.
+      Du scannst die drei möglichen Routen wie einen Fluchtplan,
+      kalkulierst kurz die Chancen gegen die Konkurrenz und legst
+      blitzschnell los. Der Weg zur Bibliothek führt eine schmale Treppe
+      hinunter, vorbei an vergilbten Aushängen und einem Stapel
+      ausrangierter Stühle, bis du unten vor der schweren Tür mit dem
+      Schild „Bibliothek – bitte leise“ stehst und sie so lautlos wie
+      möglich öffnest. Die Bibliothekarin bewegt sich lautlos wie eine
+      Spezialeinheit zwischen den Regalen, Zwille im Anschlag, und du
+      hältst instinktiv den Atem an.
     backwardText: >-
-      Ein Klick, ein Zwirbeln – ZWIIING! – ein Haargummi schnalzt dir
-      haarscharf am Ohr vorbei, bevor du überhaupt reagieren kannst, und
-      du bist durch die Tür. Du hastest denselben Hinterflur zurück,
-      vorbei an Ersatzstühlen und alten Wandkarten, wieder an der nach
-      Toast riechenden Schulküche vorbei, und stolperst direkt zurück in
-      das tobende Völkerballspiel der Sporthalle.
+      Du schleichst rückwärts aus der Bibliothek, ein Haargummi schnalzt
+      dir noch hinterher, und nimmst die schmale Treppe wieder nach oben,
+      zwei Stufen auf einmal. Du bist zurück am Ausgangspunkt. Die
+      Cafeteria-Uhr tickt wie ein Countdown, die Pausenglocke lauert
+      bedrohlich nah, und irgendwo klappert schon das erste Tablett.
   - from: sporthalle
-    to: nw_trakt
+    to: hof
     forwardText: >-
-      Du duckst dich ein letztes Mal weg, hechtest durch die Seitentür der
-      Sporthalle und stolperst in den dunklen Verbindungsgang, wo dich
-      eine losgelöste Turnmatte fast zu Fall bringt und ein umgekippter
-      Ballwagen den Weg versperrt; du kletterst hindurch und landest, noch
-      außer Atem, auf der kühlen Kellertreppe mitten im NW-Trakt.
+      Du duckst dich unter einem Ball weg, hechtest zur Seite, duckst dich
+      unter dem nächsten – dreimal, viermal – und wirfst dich im letzten
+      Moment durch die Seitentür, gerade so ungetroffen, hinaus auf den
+      Hof.
     backwardText: >-
-      Du stößt dich vom eiskalten Geländer ab und wischst dir den Staub
-      von den Knien, tapst zurück durch den dunklen Verbindungsgang – und
-      stürzt direkt wieder mitten in ein neues Völkerballspiel der
-      Sporthalle.
-  - from: bibliothek
+      Du drückst dich noch einmal durch dieselbe Seitentür zurück in die
+      Sporthalle – und stehst prompt wieder mitten in einem neuen Anwurf,
+      drei Bälle gleichzeitig im Anflug.
+  - from: sporthalle
     to: ziel
     forwardText: >-
-      Ein Klick, ein Zwirbeln – ZWIIING! – ein Haargummi schnalzt dir
-      haarscharf am Ohr vorbei, bevor du überhaupt reagieren kannst, und
-      du bist durch die Tür. Du kletterst kurzerhand aus dem
-      Bibliotheksfenster, landest unsanft im Blumenbeet, rappelst dich auf
-      und stürmst durch die Hintertür direkt in die Küche, wo die
-      zwergenhaften Küchenkräfte entsetzt aufkreischen und Töpfe fallen
-      lassen. Du kommst um die letzte Ecke: ein Lichtkegel fällt auf die
-      Theke, genau auf den letzten Donut – und auf eine Hand, die schon
-      danach greift.
+      Mit einem letzten, spektakulären Wurf triffst du den letzten
+      Gegner – das Spiel ist gewonnen! Deine Mitspieler jubeln, kapern
+      kurzerhand den Mattenwagen aus der Ecke, hieven dich hinauf, hissen
+      eine Piratenflagge aus einem Handtuch, und im Triumphzug rollst du,
+      laut skandiert, direkt zur Cafeteria-Theke.
     backwardText: >-
-      Mit dem Donut sicher in der Hand drehst du dich noch einmal
-      triumphierend um, kletterst durch die Küche zurück nach draußen,
-      vorbei an den entsetzt aufkreischenden Küchenkräften, kraxelst durchs
-      Blumenbeet zurück hoch und schwingst dich zurück durchs
-      Bibliotheksfenster, direkt in die wartende Zwille der
-      Bibliothekarin.
+      Mit dem Donut sicher in der Hand lässt du dich vom Mattenwagen
+      herunter und gehst, angefeuert von entfernten Jubelrufen, noch
+      einmal zurück in die Sporthalle, wo bereits das nächste Spiel
+      begonnen hat.
   - from: nw_trakt
-    to: ziel
+    to: hof
     forwardText: >-
-      Du stößt dich vom eiskalten Geländer ab, wischst dir den Staub von
-      den Händen und verschwindest durch den nächsten schmalen Durchgang.
-      Herr Dr. Kessler, hochmotivierter Physiklehrer, hat aus dem Fenster
-      des NW-Trakts eine improvisierte Seilbahn gespannt – „ideal für den
-      Fallversuch!“ – und schnallt dich, bevor du protestieren kannst, in
-      einen selbstgenähten Fallschirm, der sich erst zwei Meter über dem
-      Boden mit einem lauten Rucken öffnet und dich einmal wild durch die
-      Luft wirbeln lässt, mit dem du reichlich unsanft direkt vor der
-      Cafeteria landest. Du kommst um die letzte Ecke: ein Lichtkegel
-      fällt auf die Theke, genau auf den letzten Donut – und auf eine
-      Hand, die schon danach greift.
+      Der Schulsanitätsdienst streitet immer noch über „Sportunfall“ oder
+      „sonstiger Unfall“, als du dich unbemerkt in den nächsten
+      Physikraum flüchtest. Herr Dr. Kessler, hochmotivierter
+      Physiklehrer, sieht sofort eine Gelegenheit für den „Fallversuch“,
+      schnallt dich ohne weitere Diskussion in einen selbstgenähten
+      Fallschirm und wirft dich kurzerhand aus dem Fenster – du landest,
+      reichlich unsanft, mitten auf dem Hof.
     backwardText: >-
-      Mit dem Donut sicher in der Hand drehst du dich noch einmal
-      triumphierend um, doch bevor du fliehen kannst, taucht Herr Dr.
-      Kessler grinsend mit seiner Seilbahn auf – „Rückflug gefällig, für
-      die Statistik?“ – und zieht dich zurück durchs Fenster in den
-      NW-Trakt.
-  - from: pausenhalle
-    to: nw_trakt
+      Herr Dr. Kessler winkt dir vom Fenster aus fröhlich zu – „Nächster
+      Testflug gefällig?“ – doch du schüttelst den Kopf und kletterst
+      stattdessen brav die Treppe zurück hoch in den NW-Trakt, wo der
+      Streit der Sanitäter noch immer nicht entschieden ist.
+  - from: nw_trakt
+    to: bibliothek
     forwardText: >-
-      Du flüsterst ihnen knapp die Lösung zu, drückst für sie den Knopf
-      und schlüpfst rasch weiter. Die Treppe zum NW-Trakt liegt gleich
-      neben dem Ausgang der Pausenhalle, und du nimmst sie mit zwei Stufen
-      auf einmal.
+      Du nutzt den Streit der Sanitäter über die richtige Unfallkategorie
+      aus, murmelst etwas von „ich hol schnell die Unterschrift der
+      Klassenleitung“ und schleppst dich, das Knie noch schmerzend, über
+      die Hintertreppe direkt in die Bibliothek. Die Bibliothekarin bewegt
+      sich lautlos wie eine Spezialeinheit zwischen den Regalen, Zwille im
+      Anschlag, und du hältst instinktiv den Atem an.
     backwardText: >-
-      Du stößt dich vom eiskalten Geländer ab, wischst dir den Staub von
-      den Händen und verschwindest durch den nächsten schmalen Durchgang.
-      Die Treppe zum NW-Trakt liegt gleich neben dem Ausgang der
-      Pausenhalle. Am Wasserspender blockiert eine ganze Traube
-      Drittklässler das kniffelige Rätsel-Schloss.
-  - from: pausenhalle
-    to: ziel
-    forwardText: >-
-      Du flüsterst ihnen knapp die Lösung zu, drückst für sie den Knopf
-      und schlüpfst rasch weiter. Die Cafeteria-Theke ist nur einen Sprung
-      von der Pausenhalle entfernt. Du kommst um die letzte Ecke: ein
-      Lichtkegel fällt auf die Theke, genau auf den letzten Donut – und
-      auf eine Hand, die schon danach greift.
-    backwardText: >-
-      Mit dem Donut sicher in der Hand drehst du dich noch einmal
-      triumphierend um und schlenderst zurück zur Pausenhalle, wo dich die
-      Drittklässler am Wasserspender bereits dankbar erwarten.
+      Du schleichst dich aus der Bibliothek und die Hintertreppe wieder
+      hoch, an der Bibliothekarin vorbei, die dich mit zusammengekniffenen
+      Augen und gespannter Zwille beobachtet, und stehst wieder mitten im
+      Streit des Schulsanitätsdienstes im NW-Trakt.
   - from: bibliothek
-    to: nw_trakt
+    to: ziel
     forwardText: >-
-      Ein Klick, ein Zwirbeln – ZWIIING! – ein Haargummi schnalzt dir
-      haarscharf am Ohr vorbei, bevor du überhaupt reagieren kannst, und
-      du bist durch die Tür. Die Bibliothekarin packt dich unsanft am
-      Kragen und wirft dich kurzerhand aus der Seitentür ins Treppenhaus –
-      und du stehst benommen mitten im NW-Trakt, direkt vor der kühlen
-      Kellertreppe.
+      Um dich herum werden reihenweise Mitschüler von Haargummis
+      abgeschossen, einer nach dem anderen, wie am D-Day; unter lautem
+      ZWIIING-ZWIIING-ZWIIING kämpfst du dich geduckt durch die
+      Regalreihen und schaffst es, mit einem letzten Hechtsprung durch die
+      Tür, hinaus zur Cafeteria-Theke.
     backwardText: >-
-      Du stößt dich vom eiskalten Geländer ab und wischst dir den Staub
-      von den Händen. Diesmal schleichst du dich lieber leise die Treppe
-      zur Bibliothek hoch, an der Bibliothekarin vorbei, die dich mit
-      zusammengekniffenen Augen und der Zwille im Anschlag beobachtet,
-      aber gerade noch nicht abdrückt.
+      Mit dem Donut sicher in der Hand kämpfst du dich noch einmal zurück
+      durch das ZWIIING-Kreuzfeuer der Regalreihen, tief geduckt, zurück
+      in die Bibliothek, wo die Schlacht unvermindert weitergeht.
+  - from: bibliothek
+    to: hof
+    forwardText: >-
+      Ein Buch rutscht dir aus der Hand und klatscht viel zu laut auf den
+      Boden – die Bibliothekarin fährt herum, Zwille bereits gespannt, und
+      du bist plötzlich selbst das Ziel. Du hechtest zur nächsten Tür und
+      flüchtest hinaus auf den Hof, ein Haargummi schnalzt noch knapp an
+      deinem Ohr vorbei.
+    backwardText: >-
+      Du schleichst zurück durch dieselbe Tür in die Bibliothek, in der
+      Hoffnung, dass die Bibliothekarin dich diesmal übersieht – die
+      Zwille ist noch gespannt, aber sie zielt gerade woanders hin.
+  - from: hof
+    to: ziel
+    forwardText: >-
+      Am Wasserspender blockiert eine ganze Traube Drittklässler das
+      kniffelige Rätsel-Schloss. Du flüsterst ihnen knapp die Lösung zu,
+      drückst für sie den Knopf, und schlüpfst rasch weiter zur
+      Cafeteria-Theke.
+    backwardText: >-
+      Mit dem Donut sicher in der Hand drehst du dich noch einmal um und
+      schlenderst zurück zum Hof, wo dich die Drittklässler am
+      Wasserspender bereits dankbar erwarten.
