@@ -108,6 +108,7 @@
   .route-node-label{font-family:var(--font-num);font-size:20px;fill:var(--text);text-anchor:middle;dominant-baseline:central;pointer-events:none}
   .route-node-label.here{fill:#20180a;font-weight:700}
   .route-node-name{font-family:var(--font-ui);font-size:15px;font-weight:600;fill:var(--paper);text-anchor:middle;pointer-events:none}
+  .player-dot{fill:var(--pink);stroke:#fff;stroke-width:1.5px}
   table.sheet{width:100%;border-collapse:collapse;font-size:.85rem}
   table.sheet th,table.sheet td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left}
   table.sheet th{color:var(--muted);font-weight:500;font-size:.72rem}
@@ -178,7 +179,7 @@
       <section class="card">
         <h2>Dein Weg</h2><p class="sub" style="color:var(--muted)">Gold = gegangen, Pink = aktuell unterwegs.</p>
         <div class="mapwrap"><svg class="map" id="s_map" role="img" aria-label="Graph">
-          <g id="s_edges"></g><g id="s_nodes"></g></svg></div>
+          <g id="s_edges"></g><g id="s_nodes"></g><g id="s_dots"></g></svg></div>
       </section>
       <section class="card">
         <h2>Gemeinsame Tabelle</h2><p class="sub" style="color:var(--muted)">Füllt sich automatisch für alle, sobald jemand kürzer ankommt.</p>
@@ -424,7 +425,11 @@ async function startStudent(room,name){
       $("s_play").textContent=gameOver?"Ergebnisse":"▶ Play";
       $("s_grid").classList.toggle("results-mode",gameOver&&resultsMode);
       renderSheet(state.board,new Set(state.highlightNodes||[]));
-      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId,state.board,new Set(state.visited||[]));
+      const iAmActive=me&&me.status==="traversing";
+      const dotPlayers=Object.entries(state.players)
+        .filter(([otherPid,p])=>p.status==="traversing"&&(iAmActive?otherPid===pid:true))
+        .map(([,p])=>p);
+      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId,state.board,new Set(state.visited||[]),dotPlayers);
       renderProgress(me,state);
 
       if(!me){
@@ -542,8 +547,8 @@ function renderSheet(board,signaledNodes){
     tr.classList.toggle("highlight",signaledNodes.has(id));
   });
 }
-function renderStudentMap(here,path,currentEdge,board,visitedSet){
-  const eL=$("s_edges"),nL=$("s_nodes"); eL.innerHTML="";nL.innerHTML="";
+function renderStudentMap(here,path,currentEdge,board,visitedSet,dotPlayers){
+  const eL=$("s_edges"),nL=$("s_nodes"),dL=$("s_dots"); eL.innerHTML="";nL.innerHTML="";dL.innerHTML="";
   const taken=new Set(path||[]),R=52;
   U.edges.forEach(e=>{ const a=GRAPH.nodes[e.from],b=GRAPH.nodes[e.to];
     const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),ux=dx/d,uy=dy/d;
@@ -560,6 +565,21 @@ function renderStudentMap(here,path,currentEdge,board,visitedSet){
     label.textContent=visited?formatSeconds(dist):"∞";
     const nameLabel=el("text",{x:n.x,y:n.y+R+18,class:"route-node-name"},nL);
     nameLabel.textContent=(visitedSet&&visitedSet.has(id))?(n.short||n.name):"?";
+  });
+  (dotPlayers||[]).forEach(p=>{
+    const edge=U.edgeById[p.edgeId];
+    if(!edge)return;
+    const traversal=edge[p.direction];
+    if(!traversal)return;
+    const fromId=p.direction==="forward"?edge.from:edge.to;
+    const toId=p.direction==="forward"?edge.to:edge.from;
+    const from=GRAPH.nodes[fromId],to=GRAPH.nodes[toId];
+    const frac=traversal.w>0?Math.min(1,p.progress/traversal.w):0;
+    el("circle",{
+      cx:from.x+(to.x-from.x)*frac,
+      cy:from.y+(to.y-from.y)*frac,
+      r:8,class:"player-dot"
+    },dL);
   });
 }
 </script>
