@@ -101,7 +101,10 @@
   .route-taken{stroke:var(--brass);stroke-width:7;opacity:1}
   .route-current{stroke:var(--pink);stroke-width:7;stroke-dasharray:10 7;opacity:1}
   .route-node{fill:var(--panel);stroke:var(--line);stroke-width:2}
+  .route-node.visited{fill:var(--bg);stroke:var(--brass-deep);stroke-width:3}
   .route-node.here{fill:var(--brass);stroke:var(--paper);stroke-width:3}
+  .route-node-label{font-family:var(--font-num);font-size:11px;fill:var(--text);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+  .route-node-label.here{fill:#20180a;font-weight:700}
   table.sheet{width:100%;border-collapse:collapse;font-size:.85rem}
   table.sheet th,table.sheet td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left}
   table.sheet th{color:var(--muted);font-weight:500;font-size:.72rem}
@@ -400,7 +403,7 @@ async function startStudent(room,name){
       $("s_students").textContent=Object.keys(state.players).length;
       $("s_play").disabled=!state.canPlay;
       renderSheet(state.board,new Set(state.highlightNodes||[]));
-      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId);
+      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId,state.board);
       renderProgress(me,state);
 
       if(!me){
@@ -515,16 +518,22 @@ function renderSheet(board,signaledNodes){
     tr.classList.toggle("highlight",signaledNodes.has(id));
   });
 }
-function renderStudentMap(here,path,currentEdge){
+function renderStudentMap(here,path,currentEdge,board){
   const eL=$("s_edges"),nL=$("s_nodes"); eL.innerHTML="";nL.innerHTML="";
-  const taken=new Set(path||[]),R=13;
+  const taken=new Set(path||[]),R=26;
   U.edges.forEach(e=>{ const a=GRAPH.nodes[e.from],b=GRAPH.nodes[e.to];
     const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),ux=dx/d,uy=dy/d;
     const cls=e.id===currentEdge?"route-current":(taken.has(e.id)?"route-taken":"route-base");
     el("line",{x1:a.x+ux*R,y1:a.y+uy*R,x2:b.x-ux*R,y2:b.y-uy*R,class:cls},eL);
   });
-  GRAPH.order.forEach(id=>{const n=GRAPH.nodes[id];
-    el("circle",{cx:n.x,cy:n.y,r:13,class:"route-node"+(id===here?" here":"")},nL);
+  GRAPH.order.forEach(id=>{
+    const n=GRAPH.nodes[id];
+    const dist=board?board[id].dist:null;
+    const visited=dist!==null&&dist!==undefined;
+    const isHere=id===here;
+    el("circle",{cx:n.x,cy:n.y,r:R,class:"route-node"+(isHere?" here":visited?" visited":"")},nL);
+    const label=el("text",{x:n.x,y:n.y,class:"route-node-label"+(isHere?" here":"")},nL);
+    label.textContent=visited?formatSeconds(dist):"∞";
   });
 }
 </script>
