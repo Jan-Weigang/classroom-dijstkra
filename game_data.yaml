@@ -26,17 +26,6 @@ nodes:
       Er zeigt wortlos auf die nächste Tür und wendet sich wieder seinem
       dampfenden Kaffeebecher zu.
 
-  lehrer:
-    name: Der Lehrer mit Redebedarf
-    short: Lehrer
-    blurb: Er meint es gut. Sehr, sehr ausführlich gut.
-    entryText: >-
-      Du landest bei Herrn Dr. Vogelsang. „Ah, gut, dass ich Sie sehe – nur
-      ganz kurz!“, beginnt er sofort.
-    exitText: >-
-      Zwischen zwei Nebensätzen über seine Referendarzeit entdeckst du eine
-      winzige Pause und ziehst weiter.
-
   bibliothek:
     name: Die Bibliothek
     short: Biblio.
@@ -81,17 +70,12 @@ nodes:
       Mit dem Donut sicher in der Hand drehst du dich noch einmal um und
       suchst die anderen im Gang.
 
-# Topologie entspricht dem bekannten Wikipedia-Beispielgraphen zu Dijkstras
-# Algorithmus (Knoten 1-6). Zur Referenz die ungerichteten Original-Gewichte:
-#   1-2 (start-lehrer)            = 7
-#   1-3 (start-hausmeister)       = 9
-#   1-6 (start-keller)            = 14
-#   2-3 (lehrer-hausmeister)      = 10
-#   2-4 (lehrer-bibliothek)       = 15
-#   3-4 (hausmeister-bibliothek)  = 11
-#   3-6 (hausmeister-keller)      = 2
-#   4-5 (bibliothek-ziel)         = 6
-#   6-5 (keller-ziel)             = 9
+# Topologie basierte ursprünglich auf dem bekannten Wikipedia-Beispielgraphen
+# zu Dijkstras Algorithmus (Knoten 1-6), inzwischen um Pausenhalle erweitert
+# und um Lehrer wieder verkleinert, um die Zahl der im Spiel überhaupt
+# möglichen Wege auf ein für eine Klasse sinnvolles Maß zu bringen (37 -> 23
+# mögliche Wege insgesamt, davon 10 zum Ziel). Die neue Kante
+# bibliothek-keller ersetzt die frühere Anbindung über lehrer.
 #
 # Das Gewicht ist wieder ganz regulär die Textlänge (kein `weight`-Override
 # mehr). Alle entryText/exitText liegen bei ca. 100 Zeichen; die relative
@@ -118,14 +102,6 @@ nodes:
 # den vorherigen 3-Stationen-Bestweg (start-hausmeister-keller-ziel) klar.
 edges:
   - from: start
-    to: lehrer
-    extra: >-
-      Der Flur zum Lehrerzimmer ist an diesem Vormittag besonders voll:
-      Schultaschen stapeln sich vor den Spinden, jemand hat einen
-      Kaffeebecher fallen lassen, und du musst dich an mindestens drei
-      Grüppchen tuschelnder Fünftklässler vorbeidrängeln, bevor die Tür
-      überhaupt in Sicht kommt.
-  - from: start
     to: hausmeister
     extra: >-
       Der Weg zur Hausmeisterloge führt an der Turnhalle vorbei, aus der
@@ -144,28 +120,6 @@ edges:
       dort ausgerechnet jetzt ihr Klassenfoto aufstellen, und schließlich
       über eine zweite, engere Treppe, die direkt zur Kellertür führt – ein
       Umweg, der sich wirklich in die Länge zieht, wenn man es eilig hat.
-  - from: lehrer
-    to: hausmeister
-    extra: >-
-      Vom Lehrerzimmer aus nimmst du den kurzen Flur Richtung Verwaltung,
-      vorbei an der Anschlagtafel voller vergilbter Aushänge und einem
-      umgekippten Papierkorb, den offenbar noch niemand bemerkt hat; kurz
-      vor der Ecke musst du einem Rollcontainer ausweichen, den jemand
-      mitten in den Weg gestellt hat, bevor die Tür der Hausmeisterei
-      auftaucht.
-  - from: lehrer
-    to: bibliothek
-    extra: >-
-      Der Weg von Herrn Vogelsangs Zimmer zur Bibliothek ist der mit
-      Abstand längste im ganzen Gebäude: erst der komplette Ostflügel
-      entlang, vorbei an drei verschlossenen Fachräumen, dann über die
-      Galerie mit Blick auf die Aula, wo gerade jemand Stühle für die
-      nächste Veranstaltung stapelt, weiter durch den schmalen
-      Verbindungsgang zum Altbau, dessen Boden bei jedem Schritt leise
-      knarrt, an der Kunstsammlung mit den immer gleichen drei
-      ausgestellten Vasen vorbei, bis endlich, ganz am Ende des Flurs, die
-      schwere Holztür mit der Aufschrift „Bibliothek – bitte leise“
-      auftaucht.
   - from: hausmeister
     to: bibliothek
     extra: >-
@@ -200,3 +154,8 @@ edges:
     extra: >-
       Die Cafeteria-Theke ist nur einen Sprung von der Pausenhalle
       entfernt.
+  - from: bibliothek
+    to: keller
+    extra: >-
+      Von der Bibliothek führt eine schmale Wendeltreppe direkt hinunter
+      zum Keller, vorbei an einem Stapel eingemotteter alter Atlanten.
