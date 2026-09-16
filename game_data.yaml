@@ -1,0 +1,101 @@
+nodes:
+  start:
+    start: true
+    name: Der Startschuss
+    short: Start
+    blurb: Es klingelt gleich. Drei Wege liegen vor dir.
+    intro: >-
+      Noch wenige Minuten bis zur großen Pause. Im hintersten Winkel der
+      Schulküche wartet der allerletzte Schoko-Donut. Finde den kürzesten Weg
+      zur Theke – bevor es klingelt.
+    entryText: Du bist wieder am Ausgangspunkt angekommen.
+    exitText: Du entscheidest dich sofort und läufst los.
+
+  hausmeister:
+    name: Der Hausmeister
+    short: Hausm.
+    blurb: Strenge Autorität – und überraschend hilfsbereit.
+    entryText: >-
+      Du erreichst Hausmeister Brzenska. Sein Schlüsselbund ist so groß wie ein
+      Steuerrad, und sein prüfender Blick folgt dir bis zur nächsten Tür.
+    exitText: >-
+      Du murmelst etwas von einem Donut, lässt den Hausmeister hinter dir und
+      suchst den nächsten Durchgang.
+
+  lehrer:
+    name: Der Lehrer mit Redebedarf
+    short: Lehrer
+    blurb: Er meint es gut. Sehr, sehr ausführlich gut.
+    entryText: >-
+      Du landest bei Herrn Dr. Vogelsang. „Ah, gut, dass ich Sie sehe – nur ganz
+      kurz!“, beginnt er und holt tief Luft.
+    exitText: >-
+      Zwischen zwei abschließenden Bemerkungen entdeckst du eine winzige
+      Gesprächspause und ziehst weiter.
+
+  automat:
+    name: Der Rätsel-Automat
+    short: Automat
+    blurb: Schlechte Laune seit dem Blitzeinschlag 2003.
+    entryText: >-
+      Vor dir blinkt der uralte Getränkeautomat. „Was wird länger, je mehr du
+      davon wegnimmst?“, fragt sein Display.
+    exitText: >-
+      Du tippst „ein Loch“. Der Automat brummt zufrieden, schiebt sich zur Seite
+      und gibt den nächsten Gang frei.
+
+  keller:
+    name: Die Kellertreppe
+    short: Keller
+    blurb: Kühl, eng, kurz. Fast zu praktisch.
+    entryText: >-
+      Du erreichst die kühle Kellertreppe und nimmst die letzten Stufen mit
+      einem Satz.
+    exitText: >-
+      Du stößt dich vom Geländer ab und verschwindest durch den nächsten
+      schmalen Durchgang.
+
+  schulhof:
+    name: Der Schulhof
+    short: Schulhof
+    blurb: Windig, weit und vielleicht die überraschende Abkürzung.
+    entryText: >-
+      Die schwere Glastür gibt nach, kalte Luft schlägt dir entgegen und du
+      trittst auf den windigen Schulhof.
+    exitText: >-
+      Du weichst zwei großen Pfützen und einem Fußball aus und hältst auf die
+      nächste Tür zu.
+
+  ziel:
+    goal: true
+    name: Die Theke – der letzte Donut
+    short: Theke
+    blurb: Warm, schokoladig, greifbar nah.
+    entryText: >-
+      Du erreichst die Cafeteria-Theke. Der warme Duft von Schokolade hängt in
+      der Luft, und der letzte Schoko-Donut liegt direkt vor dir.
+    exitText: Mit dem Donut in der Hand drehst du dich noch einmal um.
+
+edges:
+  - from: start
+    to: hausmeister
+  - from: start
+    to: lehrer
+  - from: hausmeister
+    to: automat
+  - from: hausmeister
+    to: keller
+  - from: lehrer
+    to: automat
+  - from: lehrer
+    to: keller
+  - from: automat
+    to: ziel
+  - from: keller
+    to: ziel
+  - from: start
+    to: schulhof
+  - from: schulhof
+    to: keller
+  - from: keller
+    to: ziel
