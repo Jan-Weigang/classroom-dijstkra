@@ -102,12 +102,14 @@ for index, edge in enumerate(GAME_DATA["edges"]):
     edge["id"] = f"e{index}"
     forward_text = (edge.get("forwardText") or "").strip()
     backward_text = (edge.get("backwardText") or "").strip()
-    if not forward_text or not backward_text:
+    if not forward_text and not backward_text:
         raise ValueError(
-            f"game_data.yaml: Kante {edge['id']} braucht forwardText und backwardText"
+            f"game_data.yaml: Kante {edge['id']} braucht forwardText oder backwardText"
         )
-    edge["forward"] = {"text": forward_text, "w": len(forward_text)}
-    edge["backward"] = {"text": backward_text, "w": len(backward_text)}
+    if forward_text:
+        edge["forward"] = {"text": forward_text, "w": len(forward_text)}
+    if backward_text:
+        edge["backward"] = {"text": backward_text, "w": len(backward_text)}
 
 EDGES = {edge["id"]: edge for edge in GAME_DATA["edges"]}
 ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
@@ -238,11 +240,12 @@ class GameRoom:
         edge = EDGES.get(edge_id)
         if not edge or player["node"] not in (edge["from"], edge["to"]):
             abort(400, "Ungültige Kante")
+        direction = "forward" if player["node"] == edge["from"] else "backward"
+        if direction not in edge:
+            abort(400, "Für diese Richtung gibt es keinen Text")
         player["status"] = "ready"
         player["edgeId"] = edge_id
-        player["direction"] = (
-            "forward" if player["node"] == edge["from"] else "backward"
-        )
+        player["direction"] = direction
         player["progress"] = 0
 
     def play(self):

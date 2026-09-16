@@ -72,14 +72,6 @@ edges:
       stolperst mitten in ein tobendes Völkerballspiel; gleich drei
       Bälle fliegen synchron auf dich zu, irgendjemand brüllt begeistert
       deinen Namen, und der Sportlehrer pfeift bereits wieder los.
-    backwardText: >-
-      Du duckst dich unter dem letzten Wurf weg, hechtest im Slalom um
-      zwei Mitspieler und wirfst dich zur rettenden Seitentür hinaus.
-      Hausmeister Brzenska hält dich noch einmal auf, verlangt erneut
-      deinen Schülerausweis, nickt diesmal knapp und winkt dich durch. Du
-      bist zurück am Ausgangspunkt. Die Cafeteria-Uhr tickt wie ein
-      Countdown, die Pausenglocke lauert bedrohlich nah, und irgendwo
-      klappert schon das erste Tablett.
   - from: start
     to: nw_trakt
     forwardText: >-
@@ -95,13 +87,6 @@ edges:
       sich zudem nicht einig sind, ob es ein „Sportunfall“ oder ein
       „sonstiger Unfall“ war. Du lässt sie streiten und humpelst die
       Treppe hinauf in den NW-Trakt.
-    backwardText: >-
-      Du lässt den Streit der beiden Sanitäter über „Sportunfall“ oder
-      „sonstiger Unfall“ hinter dir, nimmst die Treppe nach unten –
-      diesmal vorsichtiger – und kassierst am Fuß der Stufen trotzdem
-      einen Schlag ans Schienbein von der immer noch herumliegenden
-      Hürdenstrecke aus Schulranzen. Du bist zurück am Ausgangspunkt.
-      Die Cafeteria-Uhr tickt, die Pausenglocke lauert bedrohlich nah.
   - from: start
     to: bibliothek
     forwardText: >-
@@ -117,12 +102,6 @@ edges:
       Moment Feuer eröffnen, und du hältst instinktiv den Atem an,
       während irgendwo leise ein Buchrücken verdächtig knarzt und eine
       Lampe flackert.
-    backwardText: >-
-      Du schleichst rückwärts aus der Bibliothek, ein Haargummi schnalzt
-      dir noch knapp am Ohr vorbei, und nimmst die schmale Treppe wieder
-      nach oben, zwei Stufen auf einmal. Du bist zurück am Ausgangspunkt.
-      Die Cafeteria-Uhr tickt wie ein Countdown, die Pausenglocke lauert
-      bedrohlich nah, und irgendwo klappert schon das erste Tablett.
   - from: sporthalle
     to: hof
     forwardText: >-
