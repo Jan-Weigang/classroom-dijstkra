@@ -62,6 +62,8 @@
   .grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start;
     transition:filter .4s ease}
   .grid.wait-mode{filter:grayscale(.9) brightness(.82)}
+  .grid.results-mode{grid-template-columns:1fr}
+  .grid.results-mode .story{display:none}
   @media (max-width:900px){.grid{grid-template-columns:1fr}}
   .story{background:var(--paper);color:var(--paper-ink);border-radius:12px;border:1px solid var(--paper-line);
     box-shadow:0 18px 40px -24px rgba(0,0,0,.7),inset 0 0 0 6px rgba(255,255,255,.35);padding:22px 26px 24px;position:relative}
@@ -295,7 +297,7 @@ async function startStudent(room,name){
       method:"POST",body:JSON.stringify({name})
     });
     const pid=joined.pid;
-    let seq=1,latest=joined.state,viewSig="",terminalNoticedAt=null;
+    let seq=1,latest=joined.state,viewSig="",terminalNoticedAt=null,resultsMode=false,gameOver=false;
     const storyAnimation={key:"",shown:0,target:0,text:"",total:0,baseCost:0,typing:false,lastTime:0,frame:0};
     const events=new EventSource("/api/rooms/"+encodeURIComponent(room)+"/events?pid="+encodeURIComponent(pid));
 
@@ -325,6 +327,11 @@ async function startStudent(room,name){
     }
 
     $("s_play").addEventListener("click",async()=>{
+      if(gameOver){
+        resultsMode=true;
+        applyState(latest);
+        return;
+      }
       try{
         latest=await api("/api/rooms/"+room+"/play",{
           method:"POST",body:JSON.stringify({pid})
@@ -410,8 +417,12 @@ async function startStudent(room,name){
 
     function applyState(state){
       const me=state.players[pid];
-      $("s_students").textContent=Object.keys(state.players).length;
-      $("s_play").disabled=!state.canPlay;
+      const players=Object.values(state.players);
+      gameOver=players.length>0&&players.every(p=>p.status==="stopped"||p.status==="finished");
+      $("s_students").textContent=players.length;
+      $("s_play").disabled=gameOver?false:!state.canPlay;
+      $("s_play").textContent=gameOver?"Ergebnisse":"▶ Play";
+      $("s_grid").classList.toggle("results-mode",gameOver&&resultsMode);
       renderSheet(state.board,new Set(state.highlightNodes||[]));
       renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId,state.board,new Set(state.visited||[]));
       renderProgress(me,state);
@@ -419,7 +430,7 @@ async function startStudent(room,name){
       if(!me){
         $("s_passage").classList.remove("typing");
         connectionStatus("s","Sitzung abgelaufen – Seite neu laden",false);
-        $("s_grid").classList.add("wait-mode");
+        $("s_grid").classList.toggle("wait-mode",!resultsMode);
         return;
       }
 
@@ -430,9 +441,9 @@ async function startStudent(room,name){
         terminalNoticedAt=null;
       }
       const inGracePeriod=isTerminal&&state.phase==="choosing"&&state.pausedAtStep===terminalNoticedAt;
-      const shouldGrey=isTerminal
+      const shouldGrey=!resultsMode&&(isTerminal
         ?!inGracePeriod
-        :(state.phase==="choosing"&&me.status!=="waiting");
+        :(state.phase==="choosing"&&me.status!=="waiting"));
       $("s_grid").classList.toggle("wait-mode",shouldGrey);
 
       const paused=state.phase==="choosing";
