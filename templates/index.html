@@ -18,9 +18,7 @@
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%}
   body{background:radial-gradient(1200px 600px at 85% -10%,#163331 0%,transparent 60%),var(--bg);
-    color:var(--text);font-family:var(--font-ui);line-height:1.5;-webkit-font-smoothing:antialiased;
-    filter:none;transition:filter .4s ease}
-  body.wait-mode{filter:grayscale(.9) brightness(.82)}
+    color:var(--text);font-family:var(--font-ui);line-height:1.5;-webkit-font-smoothing:antialiased}
   button{font-family:var(--font-ui);cursor:pointer}
   .btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 15px;border-radius:9px;font-size:.9rem;font-weight:500}
   .btn:hover{border-color:var(--brass-deep);color:#fff}
@@ -61,7 +59,9 @@
   .cost b{font-size:1.25rem;color:var(--brass);font-weight:600}.cost span{color:var(--muted);font-size:.7rem}
 
   /* ---------- Schüleransicht ---------- */
-  .grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+  .grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start;
+    transition:filter .4s ease}
+  .grid.wait-mode{filter:grayscale(.9) brightness(.82)}
   @media (max-width:900px){.grid{grid-template-columns:1fr}}
   .story{background:var(--paper);color:var(--paper-ink);border-radius:12px;border:1px solid var(--paper-line);
     box-shadow:0 18px 40px -24px rgba(0,0,0,.7),inset 0 0 0 6px rgba(255,255,255,.35);padding:22px 26px 24px;position:relative}
@@ -144,7 +144,7 @@
 <!-- ================= SCHÜLERANSICHT ================= -->
 <div id="studentApp" class="app hidden">
   <header class="top">
-    <div class="brand"><h1 id="s_title">Der letzte Donut</h1><p>Kantengewicht = Textlänge. Volle Kosten pro Weg – auch zurück.</p></div>
+    <div class="brand"><h1 id="s_title">Der letzte Donut</h1><p>Jede Kante hat feste Kosten. Volle Kosten pro Weg – auch zurück.</p></div>
     <div class="controls">
       <span class="pill" id="s_conn"><span class="led"></span><span id="s_connText">verbinde …</span></span>
       <span class="pill">Raum <b id="s_room" class="roomtag" style="font-size:.95rem">—</b></span>
@@ -155,7 +155,7 @@
     </div>
   </header>
 
-  <div class="grid">
+  <div class="grid" id="s_grid">
     <section class="story">
       <div class="chapter"><span class="dot"></span><span>Du bist:</span><b id="s_nodeName">—</b></div>
       <p class="blurb" id="s_blurb"></p>
@@ -341,7 +341,9 @@ async function startStudent(room,name){
 
     function paintStoryProgress(){
       const shown=Math.min(Math.floor(storyAnimation.shown),storyAnimation.target);
-      $("s_passage").textContent=[...storyAnimation.text].slice(0,shown).join("");
+      const textLen=[...storyAnimation.text].length;
+      const chars=storyAnimation.total>0?Math.floor((shown/storyAnimation.total)*textLen):0;
+      $("s_passage").textContent=[...storyAnimation.text].slice(0,chars).join("");
       $("s_passage").classList.toggle("typing",storyAnimation.typing);
       $("s_meter").classList.remove("hidden");
       $("s_tot").textContent=storyAnimation.total;
@@ -408,11 +410,11 @@ async function startStudent(room,name){
       if(!me){
         $("s_passage").classList.remove("typing");
         connectionStatus("s","Sitzung abgelaufen – Seite neu laden",false);
-        document.body.classList.add("wait-mode");
+        $("s_grid").classList.add("wait-mode");
         return;
       }
 
-      document.body.classList.toggle("wait-mode",me.status!=="waiting");
+      $("s_grid").classList.toggle("wait-mode",state.phase==="choosing"&&me.status!=="waiting");
 
       const paused=state.phase==="choosing";
       $("s_pauseBanner").classList.toggle("show",paused&&me.status!=="stopped"&&me.status!=="finished");
@@ -452,7 +454,7 @@ async function startStudent(room,name){
         $("s_passage").classList.remove("typing");
         $("s_stopBanner").classList.remove("show");
         $("s_winBanner").classList.add("show");
-        $("s_winBanner").textContent="Donut erreicht – dein Weg kostet "+me.cost+" Zeichen.";
+        $("s_winBanner").textContent="Donut erreicht – dein Weg kostet "+me.cost+" Punkte.";
         $("s_nodeName").textContent=GRAPH.nodes[GRAPH.goalNode].name;
         $("s_blurb").textContent=GRAPH.nodes[GRAPH.goalNode].blurb;
         $("s_statusText").textContent="Geschafft.";
@@ -471,7 +473,7 @@ async function startStudent(room,name){
         const weight=e[direction].w;
         const button=document.createElement("button");
         button.className="choice";
-        button.innerHTML='<span class="to">'+GRAPH.nodes[to].name+'</span><span class="w">'+weight+'<small>Zeichen</small></span><span class="bar"><i style="width:'+(100*weight/U.maxW)+'%"></i></span>';
+        button.innerHTML='<span class="to">'+GRAPH.nodes[to].name+'</span><span class="w">'+weight+'<small>Kosten</small></span><span class="bar"><i style="width:'+(100*weight/U.maxW)+'%"></i></span>';
         button.onclick=()=>sendAction({t:"choose",edgeId:e.id});
         box.appendChild(button);
       });
@@ -484,7 +486,7 @@ async function startStudent(room,name){
       $("s_blurb").textContent=GRAPH.nodes[me.node].blurb||"";
       $("s_statusText").textContent="";
       $("s_stopBanner").classList.add("show");
-      $("s_stopBanner").textContent="Im Gang vor dir ist "+bestName+" bereits unterwegs. Zu spät – der Donut ist weg. Dein Weg kostete "+me.cost+" Zeichen; in der Tabelle steht bereits "+best+".";
+      $("s_stopBanner").textContent="Im Gang vor dir ist "+bestName+" bereits unterwegs. Zu spät – der Donut ist weg. Dein Weg kostete "+me.cost+" Punkte; in der Tabelle steht bereits "+best+".";
       $("s_winBanner").classList.remove("show");
       $("s_choices").innerHTML="";
     }
