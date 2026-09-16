@@ -66,7 +66,9 @@
   .grid.results-mode .story{display:none}
   @media (max-width:900px){.grid{grid-template-columns:1fr}}
   .story{background:var(--paper);color:var(--paper-ink);border-radius:12px;border:1px solid var(--paper-line);
-    box-shadow:0 18px 40px -24px rgba(0,0,0,.7),inset 0 0 0 6px rgba(255,255,255,.35);padding:22px 26px 24px;position:relative}
+    box-shadow:0 18px 40px -24px rgba(0,0,0,.7),inset 0 0 0 6px rgba(255,255,255,.35);padding:22px 26px 24px;position:relative;
+    transition:filter .4s ease}
+  .grid.story-dim .story{filter:grayscale(.9) brightness(.82)}
   .chapter{margin-bottom:4px;font-size:.76rem;color:var(--paper-soft);display:flex;align-items:center;gap:8px}
   .chapter .dot{width:9px;height:9px;border-radius:50%;background:var(--brass);box-shadow:0 0 0 4px rgba(207,159,69,.2)}
   .chapter b{color:var(--paper-ink);font-family:var(--font-story);font-size:1.1rem}
@@ -446,10 +448,10 @@ async function startStudent(room,name){
         terminalNoticedAt=null;
       }
       const inGracePeriod=isTerminal&&state.phase==="choosing"&&state.pausedAtStep===terminalNoticedAt;
-      const shouldGrey=!resultsMode&&(isTerminal
-        ?!inGracePeriod
-        :(state.phase==="choosing"&&me.status!=="waiting"));
-      $("s_grid").classList.toggle("wait-mode",shouldGrey);
+      const shouldDimStory=!resultsMode&&isTerminal&&!inGracePeriod;
+      const shouldGreyAll=!resultsMode&&!isTerminal&&state.phase==="choosing"&&me.status!=="waiting";
+      $("s_grid").classList.toggle("story-dim",shouldDimStory);
+      $("s_grid").classList.toggle("wait-mode",shouldGreyAll);
 
       const paused=state.phase==="choosing";
       $("s_pauseBanner").classList.toggle("show",paused&&me.status!=="stopped"&&me.status!=="finished");
