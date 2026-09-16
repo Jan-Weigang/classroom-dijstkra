@@ -110,13 +110,11 @@ edges:
       doch bevor sie auch nur ein Pflaster auspacken dürfen, muss erst ein
       dreiseitiges Unfallprotokoll ausgefüllt werden, mit Durchschlag,
       Unterschrift der Klassenleitung und einer Skizze des Tathergangs,
-      während sich die beiden Sanitäter zusätzlich nicht einigen können,
-      ob es ein „Sportunfall“ oder ein „sonstiger Unfall“ war, und die
-      Minuten bis zum Pausenende ungerührt weiterlaufen, während im
-      Hintergrund schon die nächste Klasse ungeduldig mit ihren eigenen
-      Schulranzen wartet, um dieselbe Hürdenstrecke zu versuchen. Du
-      erreichst die kühle Kellertreppe des NW-Trakts und nimmst die
-      letzten Stufen mit einem einzigen großen, leicht zu forschen Satz.
+      während die beiden Sanitäter sich zudem nicht einig sind, ob es ein
+      „Sportunfall“ oder ein „sonstiger Unfall“ war, und die Minuten bis
+      zum Pausenende ungerührt weiterlaufen. Du erreichst die kühle
+      Kellertreppe des NW-Trakts und nimmst die letzten Stufen mit einem
+      einzigen großen, leicht zu forschen Satz.
     backwardText: >-
       Du stößt dich vom eiskalten Geländer ab, wischst dir den Staub von
       den Händen und verschwindest durch den nächsten schmalen Durchgang.
@@ -151,9 +149,10 @@ edges:
     to: nw_trakt
     forwardText: >-
       Du duckst dich ein letztes Mal weg, hechtest durch die Seitentür der
-      Sporthalle, stolperst im dunklen Verbindungsgang über eine
-      losgelöste Turnmatte – und landest, noch außer Atem, auf der kühlen
-      Kellertreppe mitten im NW-Trakt.
+      Sporthalle und stolperst in den dunklen Verbindungsgang, wo dich
+      eine losgelöste Turnmatte fast zu Fall bringt und ein umgekippter
+      Ballwagen den Weg versperrt; du kletterst hindurch und landest, noch
+      außer Atem, auf der kühlen Kellertreppe mitten im NW-Trakt.
     backwardText: >-
       Du stößt dich vom eiskalten Geländer ab und wischst dir den Staub
       von den Knien, tapst zurück durch den dunklen Verbindungsgang – und
