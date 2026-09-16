@@ -371,6 +371,15 @@ async function startStudent(room,name){
     }
 
     function renderProgress(me,state){
+      if(me&&me.status==="stopped"){
+        if(storyAnimation.frame)cancelAnimationFrame(storyAnimation.frame);
+        storyAnimation.key="";storyAnimation.shown=0;storyAnimation.target=0;storyAnimation.frame=0;
+        $("s_passage").textContent="";
+        $("s_passage").classList.remove("typing");
+        $("s_meter").classList.add("hidden");
+        $("s_cost").textContent=formatSeconds(me.cost);
+        return;
+      }
       const edge=me&&me.textEdgeId?U.edgeById[me.textEdgeId]:null;
       const traversal=edge&&me.textDirection?edge[me.textDirection]:null;
       if(!traversal){
@@ -404,7 +413,7 @@ async function startStudent(room,name){
       $("s_students").textContent=Object.keys(state.players).length;
       $("s_play").disabled=!state.canPlay;
       renderSheet(state.board,new Set(state.highlightNodes||[]));
-      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId,state.board);
+      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId,state.board,new Set(state.visited||[]));
       renderProgress(me,state);
 
       if(!me){
@@ -420,8 +429,11 @@ async function startStudent(room,name){
       }else{
         terminalNoticedAt=null;
       }
-      const inGracePeriod=isTerminal&&state.pausedAtStep===terminalNoticedAt;
-      $("s_grid").classList.toggle("wait-mode",state.phase==="choosing"&&me.status!=="waiting"&&!inGracePeriod);
+      const inGracePeriod=isTerminal&&state.phase==="choosing"&&state.pausedAtStep===terminalNoticedAt;
+      const shouldGrey=isTerminal
+        ?!inGracePeriod
+        :(state.phase==="choosing"&&me.status!=="waiting");
+      $("s_grid").classList.toggle("wait-mode",shouldGrey);
 
       const paused=state.phase==="choosing";
       $("s_pauseBanner").classList.toggle("show",paused&&me.status!=="stopped"&&me.status!=="finished");
@@ -519,7 +531,7 @@ function renderSheet(board,signaledNodes){
     tr.classList.toggle("highlight",signaledNodes.has(id));
   });
 }
-function renderStudentMap(here,path,currentEdge,board){
+function renderStudentMap(here,path,currentEdge,board,visitedSet){
   const eL=$("s_edges"),nL=$("s_nodes"); eL.innerHTML="";nL.innerHTML="";
   const taken=new Set(path||[]),R=52;
   U.edges.forEach(e=>{ const a=GRAPH.nodes[e.from],b=GRAPH.nodes[e.to];
@@ -536,7 +548,7 @@ function renderStudentMap(here,path,currentEdge,board){
     const label=el("text",{x:n.x,y:n.y,class:"route-node-label"+(isHere?" here":"")},nL);
     label.textContent=visited?formatSeconds(dist):"∞";
     const nameLabel=el("text",{x:n.x,y:n.y+R+18,class:"route-node-name"},nL);
-    nameLabel.textContent=n.short||n.name;
+    nameLabel.textContent=(visitedSet&&visitedSet.has(id))?(n.short||n.name):"?";
   });
 }
 </script>
