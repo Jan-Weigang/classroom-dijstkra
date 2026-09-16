@@ -84,10 +84,6 @@ def spring_layout(node_ids, edges, width=760, height=480, iterations=400, seed=7
     return positions, [0, 0, width, height]
 
 
-def compose_text(*parts):
-    return " ".join(part.strip() for part in parts if part and part.strip())
-
-
 positions, view_box = spring_layout(NODES, GAME_CONFIG["edges"])
 GAME_DATA = {
     "title": "Der letzte Donut",
@@ -104,11 +100,12 @@ for node, position in positions.items():
 
 for index, edge in enumerate(GAME_DATA["edges"]):
     edge["id"] = f"e{index}"
-    left = GAME_DATA["nodes"][edge["from"]]
-    right = GAME_DATA["nodes"][edge["to"]]
-    extra = edge.get("extra", "")
-    forward_text = compose_text(left["exitText"], extra, right["entryText"])
-    backward_text = compose_text(right["exitText"], extra, left["entryText"])
+    forward_text = (edge.get("forwardText") or "").strip()
+    backward_text = (edge.get("backwardText") or "").strip()
+    if not forward_text or not backward_text:
+        raise ValueError(
+            f"game_data.yaml: Kante {edge['id']} braucht forwardText und backwardText"
+        )
     edge["forward"] = {"text": forward_text, "w": len(forward_text)}
     edge["backward"] = {"text": backward_text, "w": len(backward_text)}
 

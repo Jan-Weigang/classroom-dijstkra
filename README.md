@@ -80,11 +80,12 @@ da mehrere Prozesse keinen gemeinsamen Arbeitsspeicher teilen.
 Das gesamte Netz liegt in `game_data.yaml`. Auf der obersten Ebene sind nur
 `nodes` und `edges` erlaubt:
 
-- `nodes` enthält Namen, Kurztexte sowie `entryText` und `exitText`.
-- Genau ein Knoten bekommt `start: true`, genau einer `goal: true`.
-- `edges` verbindet jeweils `from` und `to`; ein optionales `extra` fügt einen
-  kurzen Gang-/Umwegtext ein, der beim Zusammensetzen zwischen `exitText` und
-  `entryText` steht (siehe unten). Feste Layoutangaben gibt es nicht.
+- `nodes` enthält Namen und Kurztexte für Tabelle und Graph (`name`, `short`,
+  `blurb`); genau ein Knoten bekommt `start: true` (der zusätzlich ein
+  `intro` für den Startbildschirm trägt), genau einer `goal: true`.
+- `edges` verbindet jeweils `from` und `to` und trägt den gesamten
+  abgespielten Text direkt: `forwardText` für den Weg von `from` nach `to`,
+  `backwardText` für die Gegenrichtung. Feste Layoutangaben gibt es nicht.
 
 Die Reihenfolge der Knoten in der YAML bestimmt die stabile Reihenfolge in der
 Tabelle. Die Koordinaten berechnet Flask bei jedem Serverstart automatisch mit
@@ -92,26 +93,21 @@ einem deterministischen Feder-Layout (Fruchterman-Reingold) allein aus der
 Graphtopologie – es gibt keine Ebenen und keine feste Verankerung von Start
 oder Ziel, Kanten dürfen also frei zwischen beliebigen Knoten verlaufen.
 
-Für einen Weg von A nach B setzt Flask den abgespielten Text aus `exitText` von
-A, dem optionalen `extra` der Kante und `entryText` von B zusammen (in dieser
-Reihenfolge). In Gegenrichtung verwendet es entsprechend den Ausgangstext von
-B, dasselbe `extra` und den Eingangstext von A. Kanten-IDs werden beim
-Serverstart automatisch aus der Reihenfolge erzeugt; das Gewicht je Richtung
-ist ganz regulär die Länge dieses zusammengesetzten Texts.
-
-`extra` ist mehr als nur Komfort für längere Gänge: `entryText`/`exitText`
-hängen am Knoten und werden von jeder Kante an diesem Knoten mitbenutzt.
-Sobald ein Knoten sowohl eine direkte Kante als auch einen Umweg über einen
-Nachbarn zum selben Ziel hat, kann der Umweg allein über Knotentexte nie
-günstiger sein als die direkte Kante – er trägt ja zusätzlich noch die (nicht
-negative) Textlänge des Zwischenknotens. `extra` gehört dagegen nur zu seiner
-eigenen Kante, ist also frei von dieser Kopplung: eine direkte Kante lässt
-sich damit gezielt mit einem langen Umwegtext teurer machen als die Summe der
-kürzeren Kanten über einen Zwischenknoten. Ein Graph, der eine echte
-Dijkstra-Relaxation zeigen soll (wie das Standardbeispiel in `game_data.yaml`),
-braucht dafür `extra` auf mindestens einer Kante. Damit lassen sich ohne
-Änderungen an HTML oder Python andere ungerichtete Netze aufbauen. Nach
-Änderungen an der YAML-Datei Flask neu starten.
+Kanten-IDs werden beim Serverstart automatisch aus der Reihenfolge erzeugt;
+das Gewicht je Richtung ist ganz regulär die Länge von `forwardText`
+beziehungsweise `backwardText`. Beide Felder sind pro Kante vollständig
+eigenständig – anders als in einer früheren Version, in der sich der Text
+aus Ausgangstext des einen Knotens, einem optionalen Kantenzusatz und
+Eingangstext des anderen Knotens zusammensetzte. Das führte zu zwei
+Problemen: Formulierungen aus dem Knotentext tauchten zwangsläufig auf jeder
+Kante an diesem Knoten wieder auf (Dopplungen), und ein Umweg über einen
+Zwischenknoten konnte rechnerisch nie günstiger sein als eine direkte Kante
+zum selben Ziel, weil er zusätzlich die (nicht negative) Textlänge des
+Zwischenknotens trug – ein Graph mit echter Dijkstra-Relaxation kam ohne
+Workaround nicht aus. Mit eigenständigem Text pro Kante und Richtung
+entfällt beides: jede Kante ist frei wählbar, unabhängig von jeder anderen.
+Damit lassen sich ohne Änderungen an HTML oder Python andere ungerichtete
+Netze aufbauen. Nach Änderungen an der YAML-Datei Flask neu starten.
 
 Die Aktualisierungsrate lässt sich optional ändern:
 
