@@ -15,10 +15,10 @@ nodes:
       Du wirfst einen letzten Blick auf die drei offenen Türen und
       entscheidest dich sofort für einen Weg.
 
-  hausmeister:
-    name: Der Hausmeister
-    short: Hausm.
-    blurb: Strenge Autorität – und überraschend hilfsbereit.
+  sporthalle:
+    name: Die Sporthalle
+    short: Sport.
+    blurb: Bälle fliegen, Pfeifen schrillen – und mittendrin ein strenger Blick.
     entryText: >-
       Du erreichst Hausmeister Brzenska. Er verlangt wortlos deinen
       Schülerausweis und stempelt ihn dreimal.
@@ -37,9 +37,9 @@ nodes:
       Ein Klick, ein Zwirbeln – ein Haargummi schnalzt dir haarscharf am
       Ohr vorbei, dann bist du durch die Tür.
 
-  keller:
-    name: Die Kellertreppe
-    short: Keller
+  nw_trakt:
+    name: Der NW-Trakt
+    short: NW-Trakt
     blurb: Kühl, eng, kurz. Fast zu praktisch.
     entryText: >-
       Du erreichst die kühle Kellertreppe und nimmst die letzten Stufen mit
@@ -90,7 +90,7 @@ nodes:
 # pro Kante frei wählbar und unabhängig von den Knotentexten, daher lässt
 # sich damit trotzdem eine echte Dijkstra-Relaxation abbilden.
 #
-# `pausenhalle` ist ein zusätzlicher Knotenpunkt (an keller und ziel
+# `pausenhalle` ist ein zusätzlicher Knotenpunkt (an nw_trakt und ziel
 # angebunden) mit bewusst kurzen Texten. Weil Kosten in diesem Spiel exakt
 # der Simulationszeit entsprechen, kommt eine
 # Tabellen-Aktualisierung (ein bereits eingetragener Wert wird durch einen
@@ -98,19 +98,24 @@ nodes:
 # günstigsten bekannten Weg genommen. Die eigentliche Dijkstra-Pointe
 # ("mehr, aber günstigere Stationen schlagen wenige teure") zeigt sich
 # stattdessen im Vergleich zwischen Schüler:innen: der Weg über die
-# Pausenhalle (start-hausmeister-keller-pausenhalle-ziel, 4 Stationen)
-# schlägt sowohl den direkten 2-Stationen-Weg (start-keller-ziel) als auch
-# den vorherigen 3-Stationen-Bestweg (start-hausmeister-keller-ziel) klar.
+# Pausenhalle (start-sporthalle-nw_trakt-pausenhalle-ziel, 4 Stationen)
+# schlägt sowohl den direkten 2-Stationen-Weg (start-nw_trakt-ziel) als auch
+# den vorherigen 3-Stationen-Bestweg (start-sporthalle-nw_trakt-ziel) klar.
+#
+# Knotennamen sind bewusst neutral (Ort, nicht Figur/Ereignis): „Sporthalle“
+# statt „Hausmeister“, „NW-Trakt“ statt „Keller“, damit der Graph selbst
+# nichts von der Story verrät - die verrät sich ausschließlich über den
+# gelesenen Text.
 edges:
   - from: start
-    to: hausmeister
+    to: sporthalle
     extra: >-
       Der Weg zur Hausmeisterloge führt mitten durch die Turnhalle, wo
       gerade ein Völkerballspiel tobt; du duckst dich unter zwei Bällen
       weg, springst über einen dritten und erreichst, leicht außer Atem,
       die schwere Tür mit dem Schild „Hausmeisterei“.
   - from: start
-    to: keller
+    to: nw_trakt
     extra: >-
       Der direkte Weg zum Keller führt über eine improvisierte
       Hürdenstrecke aus Schulranzen, die eine ganze Klasse mitten im Flur
@@ -123,7 +128,7 @@ edges:
       Klassenleitung und einer Skizze des Tathergangs, die keiner von euch
       dreien wirklich hinbekommt, während die Minuten bis zum Pausenende
       ungerührt weiterlaufen.
-  - from: hausmeister
+  - from: sporthalle
     to: bibliothek
     extra: >-
       Von der Hausmeisterei aus geht es über den Hinterflur, vorbei am
@@ -132,15 +137,15 @@ edges:
       vorbei, aus der es nach angebranntem Toast riecht, und schließlich
       durch die unscheinbare Seitentür, die direkt in die Bibliothek führt,
       vorbei am Aushang für die nächste Buchausstellung.
-  - from: hausmeister
-    to: keller
+  - from: sporthalle
+    to: nw_trakt
   - from: bibliothek
     to: ziel
     extra: >-
       Von der Bibliothek bis zur Cafeteria ist es nur ein kurzer Sprung
       über den Verbindungsflur, an zwei Aushängen für den
       Schulsanitätsdienst vorbei.
-  - from: keller
+  - from: nw_trakt
     to: ziel
     extra: >-
       Vom Keller aus nimmst du die Nebentreppe direkt neben der
@@ -149,16 +154,17 @@ edges:
       unscheinbare Tür mit dem Schild „Nur für Personal“, die
       überraschenderweise direkt hinter der Cafeteria-Theke herauskommt.
   - from: pausenhalle
-    to: keller
+    to: nw_trakt
     extra: >-
-      Die Treppe zum Keller liegt direkt neben dem Ausgang der Pausenhalle.
+      Die Treppe zum NW-Trakt liegt direkt neben dem Ausgang der
+      Pausenhalle.
   - from: pausenhalle
     to: ziel
     extra: >-
       Die Cafeteria-Theke ist nur einen Sprung von der Pausenhalle
       entfernt.
   - from: bibliothek
-    to: keller
+    to: nw_trakt
     extra: >-
       Von der Bibliothek führt eine schmale Wendeltreppe direkt hinunter
       zum Keller, vorbei an einem Stapel eingemotteter alter Atlanten.
