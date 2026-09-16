@@ -3,200 +3,190 @@ nodes:
     start: true
     name: Der Startschuss
     short: Start
-    blurb: Es klingelt gleich. Drei Wege liegen vor dir.
+    blurb: Es klingelt gleich. Drei Routen liegen vor dir.
     intro: >-
       Noch wenige Minuten bis zur großen Pause. Im hintersten Winkel der
-      Schulküche wartet der allerletzte Schoko-Donut. Finde den kürzesten Weg
-      zur Theke – bevor es klingelt.
+      Schulküche wartet der allerletzte Schoko-Donut, und du bist nicht der
+      Einzige, der davon gehört hat. Plane deine Route, beweg dich leise,
+      und sei zuerst an der Theke – bevor es klingelt.
     entryText: >-
-      Du bist wieder am Ausgangspunkt. Der Flur füllt sich mit dem Lärm der
-      großen Pause, die Uhr tickt.
+      Du bist zurück am Ausgangspunkt. Die Cafeteria-Uhr tickt wie ein
+      Countdown, die Pausenglocke lauert bedrohlich nah, und irgendwo
+      klappert schon das erste Tablett.
     exitText: >-
-      Du wirfst einen letzten Blick auf die drei offenen Türen und
-      entscheidest dich sofort für einen Weg.
+      Du scannst die drei möglichen Routen wie einen Fluchtplan,
+      kalkulierst kurz die Chancen gegen die Konkurrenz und legst
+      blitzschnell los.
 
-  hausmeister:
-    name: Der Hausmeister
-    short: Hausm.
-    blurb: Strenge Autorität – und überraschend hilfsbereit.
+  sporthalle:
+    name: Die Sporthalle
+    short: Sport.
+    blurb: Bälle fliegen, Pfeifen schrillen – und mittendrin ein strenger Blick.
     entryText: >-
-      Du erreichst Hausmeister Brzenska. Kurzer Blick, kurzes Nicken, sein
-      Schlüsselbund klappert laut.
+      Du stolperst mitten in ein tobendes Völkerballspiel; gleich drei
+      Bälle fliegen synchron auf dich zu, und irgendjemand brüllt
+      begeistert deinen Namen.
     exitText: >-
-      Er zeigt wortlos auf die nächste Tür und wendet sich wieder seinem
-      dampfenden Kaffeebecher zu.
-
-  lehrer:
-    name: Der Lehrer mit Redebedarf
-    short: Lehrer
-    blurb: Er meint es gut. Sehr, sehr ausführlich gut.
-    entryText: >-
-      Du landest bei Herrn Dr. Vogelsang. „Ah, gut, dass ich Sie sehe – nur
-      ganz kurz!“, beginnt er sofort.
-    exitText: >-
-      Zwischen zwei Nebensätzen über seine Referendarzeit entdeckst du eine
-      winzige Pause und ziehst weiter.
+      Du duckst dich unter dem letzten Wurf weg, hechtest im Slalom um
+      zwei Mitspieler und wirfst dich zur rettenden Seitentür hinaus.
 
   bibliothek:
     name: Die Bibliothek
     short: Biblio.
     blurb: Angeblich der leiseste Ort der Schule. Angeblich.
     entryText: >-
-      Du schlüpfst durch die schwere Bibliothekstür. Zwischen den Regalen
-      riecht es nach altem Papier.
+      Die Bibliothekarin bewegt sich lautlos wie eine Spezialeinheit
+      zwischen den Regalen, Zwille im Anschlag, und du hältst instinktiv
+      den Atem an.
     exitText: >-
-      Du legst das ungelesene Buch zurück ins Regal und schleichst so leise
-      wie möglich zur nächsten Tür.
+      Ein Klick, ein Zwirbeln – ZWIIING! – ein Haargummi schnalzt dir
+      haarscharf am Ohr vorbei, bevor du überhaupt reagieren kannst, und
+      du bist durch die Tür.
 
-  keller:
-    name: Die Kellertreppe
-    short: Keller
+  nw_trakt:
+    name: Der NW-Trakt
+    short: NW-Trakt
     blurb: Kühl, eng, kurz. Fast zu praktisch.
     entryText: >-
-      Du erreichst die kühle Kellertreppe und nimmst die letzten Stufen mit
-      einem einzigen großen Satz.
+      Du erreichst die kühle Kellertreppe des NW-Trakts und nimmst die
+      letzten Stufen mit einem einzigen großen, leicht zu forschen Satz.
     exitText: >-
-      Du stößt dich vom eiskalten Geländer ab und verschwindest durch den
-      nächsten schmalen Durchgang.
+      Du stößt dich vom eiskalten Geländer ab, wischst dir den Staub von
+      den Händen und verschwindest durch den nächsten schmalen Durchgang.
 
   pausenhalle:
     name: Die Pausenhalle
     short: Halle
     blurb: Der Knotenpunkt der Schule. Hier laufen alle Wege zusammen.
     entryText: >-
-      Du stehst mitten in der belebten Pausenhalle, umgeben von
-      Stimmengewirr.
+      Am Wasserspender blockiert eine ganze Traube Drittklässler das
+      kniffelige Rätsel-Schloss.
     exitText: >-
-      Du schlängelst dich durch die Menge und bist schon wieder unterwegs.
+      Du flüsterst ihnen knapp die Lösung zu, drückst für sie den Knopf
+      und schlüpfst rasch weiter.
 
   ziel:
     goal: true
     name: Die Theke – der letzte Donut
     short: Theke
-    blurb: Warm, schokoladig, greifbar nah.
+    blurb: Ein Spotlight, ein Donut – die Frage ist nur, wessen Hand ihn schon hält.
     entryText: >-
-      Du erreichst die Cafeteria-Theke. Der Duft von Schokolade hängt in der
-      Luft, der letzte Donut liegt bereit.
+      Du kommst um die letzte Ecke: ein Lichtkegel fällt auf die Theke,
+      genau auf den letzten Donut – und auf eine Hand, die schon danach
+      greift.
     exitText: >-
-      Mit dem Donut sicher in der Hand drehst du dich noch einmal um und
-      suchst die anderen im Gang.
+      Mit dem Donut sicher in der Hand drehst du dich noch einmal
+      triumphierend um und suchst grinsend die anderen im Gang.
 
-# Topologie entspricht dem bekannten Wikipedia-Beispielgraphen zu Dijkstras
-# Algorithmus (Knoten 1-6). Zur Referenz die ungerichteten Original-Gewichte:
-#   1-2 (start-lehrer)            = 7
-#   1-3 (start-hausmeister)       = 9
-#   1-6 (start-keller)            = 14
-#   2-3 (lehrer-hausmeister)      = 10
-#   2-4 (lehrer-bibliothek)       = 15
-#   3-4 (hausmeister-bibliothek)  = 11
-#   3-6 (hausmeister-keller)      = 2
-#   4-5 (bibliothek-ziel)         = 6
-#   6-5 (keller-ziel)             = 9
+# Topologie basierte ursprünglich auf dem bekannten Wikipedia-Beispielgraphen
+# zu Dijkstras Algorithmus (Knoten 1-6), inzwischen um Pausenhalle erweitert
+# und um Lehrer wieder verkleinert, um die Zahl der im Spiel überhaupt
+# möglichen Wege auf ein für eine Klasse sinnvolles Maß zu bringen (37 -> 23
+# mögliche Wege insgesamt, davon 10 zum Ziel). Die neue Kante
+# bibliothek-keller ersetzt die frühere Anbindung über lehrer.
 #
 # Das Gewicht ist wieder ganz regulär die Textlänge (kein `weight`-Override
-# mehr). Alle entryText/exitText liegen bei ca. 100 Zeichen; die relative
-# Größenordnung der Original-Gewichte wird stattdessen über das optionale
-# `extra`-Feld je Kante nachgebildet – ein kurzer Gang-/Umwegtext, der beim
-# Zusammensetzen zwischen exitText und entryText eingefügt wird. Das braucht
-# es hier zwingend: unter reiner Textlängen-Gewichtung (ohne `extra`) kann ein
-# Umweg über einen Zwischenknoten nie günstiger sein als eine direkte Kante
-# zwischen denselben zwei Knoten, weil der Umweg zusätzlich noch die (nicht
-# negative) Textlänge des Zwischenknotens selbst trägt. Das `extra`-Feld ist
-# pro Kante frei wählbar und unabhängig von den Knotentexten, daher lässt
-# sich damit trotzdem eine echte Dijkstra-Relaxation abbilden.
+# mehr). Die relative Größenordnung der Original-Gewichte wird über das
+# optionale `extra`-Feld je Kante nachgebildet – ein kurzer Gang-/Umwegtext,
+# der beim Zusammensetzen zwischen exitText und entryText eingefügt wird.
+# Das braucht es hier zwingend: unter reiner Textlängen-Gewichtung (ohne
+# `extra`) kann ein Umweg über einen Zwischenknoten nie günstiger sein als
+# eine direkte Kante zwischen denselben zwei Knoten, weil der Umweg
+# zusätzlich noch die (nicht negative) Textlänge des Zwischenknotens selbst
+# trägt. Das `extra`-Feld ist pro Kante frei wählbar und unabhängig von den
+# Knotentexten, daher lässt sich damit trotzdem eine echte
+# Dijkstra-Relaxation abbilden.
 #
-# `pausenhalle` ist ein zusätzlicher Knotenpunkt (an keller und ziel
-# angebunden) mit bewusst kurzen Texten. Weil Kosten in diesem Spiel exakt
-# der Simulationszeit entsprechen, kommt eine
+# `pausenhalle` ist ein zusätzlicher Knotenpunkt (an nw_trakt und ziel
+# angebunden) mit bewusst kurzen Texten - das ist tragend für die Waage:
+# jede Verlängerung an anderer Stelle braucht eine erneute Prüfung, ob die
+# Marge zur direkten Route (siehe unten) noch hält. Weil Kosten in diesem
+# Spiel exakt der Simulationszeit entsprechen, kommt eine
 # Tabellen-Aktualisierung (ein bereits eingetragener Wert wird durch einen
 # besseren ersetzt) hier nie vor - wer zuerst ankommt, hat zwangsläufig den
 # günstigsten bekannten Weg genommen. Die eigentliche Dijkstra-Pointe
 # ("mehr, aber günstigere Stationen schlagen wenige teure") zeigt sich
 # stattdessen im Vergleich zwischen Schüler:innen: der Weg über die
-# Pausenhalle (start-hausmeister-keller-pausenhalle-ziel, 4 Stationen)
-# schlägt sowohl den direkten 2-Stationen-Weg (start-keller-ziel) als auch
-# den vorherigen 3-Stationen-Bestweg (start-hausmeister-keller-ziel) klar.
+# Pausenhalle (start-sporthalle-nw_trakt-pausenhalle-ziel, 4 Stationen)
+# schlägt sowohl den direkten 2-Stationen-Weg (start-nw_trakt-ziel) als auch
+# den vorherigen 3-Stationen-Bestweg (start-sporthalle-nw_trakt-ziel) klar.
+#
+# Knotennamen sind bewusst neutral (Ort, nicht Figur/Ereignis): „Sporthalle“
+# statt „Hausmeister“, „NW-Trakt“ statt „Keller“, damit der Graph selbst
+# nichts von der Story verrät - die verrät sich ausschließlich über den
+# gelesenen Text.
 edges:
   - from: start
-    to: lehrer
+    to: sporthalle
     extra: >-
-      Der Flur zum Lehrerzimmer ist an diesem Vormittag besonders voll:
-      Schultaschen stapeln sich vor den Spinden, jemand hat einen
-      Kaffeebecher fallen lassen, und du musst dich an mindestens drei
-      Grüppchen tuschelnder Fünftklässler vorbeidrängeln, bevor die Tür
-      überhaupt in Sicht kommt.
+      Der Weg zur Sporthalle führt direkt an Hausmeister Brzenskas
+      Kontrollposten vorbei; er verlangt wortlos deinen Schülerausweis,
+      dreht ihn zweimal im Licht, stempelt ihn gleich dreimal und mustert
+      dich mit zusammengekniffenen Augen, bevor er dich endlich durch die
+      schwere Tür zur Halle winkt.
   - from: start
-    to: hausmeister
+    to: nw_trakt
     extra: >-
-      Der Weg zur Hausmeisterloge führt an der Turnhalle vorbei, aus der
-      gerade eine Klasse mit Matten zurückströmt; du wartest kurz, wagst
-      einen Schlenker über den Seiteneingang und erreichst schließlich die
-      schwere Tür mit dem Schild „Hausmeisterei“.
-  - from: start
-    to: keller
-    extra: >-
-      Der direkte Weg zum Keller führt einmal quer durchs halbe
-      Schulgebäude: erst die Treppe am Haupteingang runter, dann durch den
-      langen, schlecht beleuchteten Verbindungsgang hinter der Aula, vorbei
-      an der Fahrradgarage, über den kleinen Hinterhof, an dem seit Wochen
-      ein kaputter Rasenmäher steht, durch eine quietschende Nebentür, die
-      eigentlich nie benutzt wird, vorbei an einer Gruppe Erstklässler, die
-      dort ausgerechnet jetzt ihr Klassenfoto aufstellen, und schließlich
-      über eine zweite, engere Treppe, die direkt zur Kellertür führt – ein
-      Umweg, der sich wirklich in die Länge zieht, wenn man es eilig hat.
-  - from: lehrer
-    to: hausmeister
-    extra: >-
-      Vom Lehrerzimmer aus nimmst du den kurzen Flur Richtung Verwaltung,
-      vorbei an der Anschlagtafel voller vergilbter Aushänge und einem
-      umgekippten Papierkorb, den offenbar noch niemand bemerkt hat; kurz
-      vor der Ecke musst du einem Rollcontainer ausweichen, den jemand
-      mitten in den Weg gestellt hat, bevor die Tür der Hausmeisterei
-      auftaucht.
-  - from: lehrer
+      Der direkte Weg zum NW-Trakt führt über eine improvisierte
+      Hürdenstrecke aus Schulranzen, die eine ganze Klasse mitten im Flur
+      liegen gelassen hat; beim Sprung über den letzten Ranzen verlierst
+      du das Gleichgewicht und schlägst dir hart das Knie auf. Der
+      Schulsanitätsdienst ist sofort zur Stelle – zwei Fünftklässler mit
+      Verbandskasten und grimmiger Entschlossenheit –, doch bevor sie auch
+      nur ein Pflaster auspacken dürfen, muss erst ein dreiseitiges
+      Unfallprotokoll ausgefüllt werden, mit Durchschlag, Unterschrift der
+      Klassenleitung und einer Skizze des Tathergangs, während sich die
+      beiden Sanitäter zusätzlich nicht einigen können, ob es ein
+      „Sportunfall“ oder ein „sonstiger Unfall“ war, und die Minuten bis
+      zum Pausenende ungerührt weiterlaufen, während im Hintergrund schon
+      die nächste Klasse ungeduldig mit ihren eigenen Schulranzen wartet,
+      um dieselbe Hürdenstrecke zu versuchen.
+  - from: sporthalle
     to: bibliothek
     extra: >-
-      Der Weg von Herrn Vogelsangs Zimmer zur Bibliothek ist der mit
-      Abstand längste im ganzen Gebäude: erst der komplette Ostflügel
-      entlang, vorbei an drei verschlossenen Fachräumen, dann über die
-      Galerie mit Blick auf die Aula, wo gerade jemand Stühle für die
-      nächste Veranstaltung stapelt, weiter durch den schmalen
-      Verbindungsgang zum Altbau, dessen Boden bei jedem Schritt leise
-      knarrt, an der Kunstsammlung mit den immer gleichen drei
-      ausgestellten Vasen vorbei, bis endlich, ganz am Ende des Flurs, die
-      schwere Holztür mit der Aufschrift „Bibliothek – bitte leise“
-      auftaucht.
-  - from: hausmeister
-    to: bibliothek
+      Von der Sporthalle aus geht es über den Hinterflur, vorbei am Lager
+      mit den Ersatzstühlen und einem Stapel alter Wandkarten, die
+      niemand mehr braucht, dann eine kurze Treppe hoch, an der
+      Schulküche vorbei, aus der es intensiv nach angebranntem Toast
+      riecht, und schließlich durch die unscheinbare Seitentür, die
+      direkt in die Bibliothek führt, vorbei am frisch aufgehängten
+      Plakat für die nächste Buchausstellung.
+  - from: sporthalle
+    to: nw_trakt
     extra: >-
-      Von der Hausmeisterei aus geht es über den Hinterflur, vorbei am
-      Lager mit den Ersatzstühlen und einem Stapel alter Wandkarten, die
-      niemand mehr braucht, dann eine kurze Treppe hoch, an der Schulküche
-      vorbei, aus der es nach angebranntem Toast riecht, und schließlich
-      durch die unscheinbare Seitentür, die direkt in die Bibliothek führt,
-      vorbei am Aushang für die nächste Buchausstellung.
-  - from: hausmeister
-    to: keller
+      Du duckst dich unter dem letzten Ball weg, stolperst über eine
+      losgelöste Turnmatte, rappelst dich durch die Seitentür – und
+      stehst plötzlich mitten im NW-Trakt.
   - from: bibliothek
     to: ziel
     extra: >-
-      Von der Bibliothek bis zur Cafeteria ist es nur ein kurzer Sprung
-      über den Verbindungsflur, an zwei Aushängen für den
-      Schulsanitätsdienst vorbei.
-  - from: keller
+      Du kletterst kurzerhand aus dem Bibliotheksfenster, landest unsanft
+      im Blumenbeet, rappelst dich auf und stürmst durch die Hintertür
+      direkt in die Küche, wo die zwergenhaften Küchenkräfte entsetzt
+      aufkreischen und Töpfe fallen lassen.
+  - from: nw_trakt
     to: ziel
     extra: >-
-      Vom Keller aus nimmst du die Nebentreppe direkt neben der
-      Heizungsanlage, vorbei an Stapeln leerer Getränkekisten und einem
-      alten Werkzeugschrank, dessen Tür seit Jahren klemmt, dann durch die
-      unscheinbare Tür mit dem Schild „Nur für Personal“, die
-      überraschenderweise direkt hinter der Cafeteria-Theke herauskommt.
+      Herr Dr. Kessler, hochmotivierter Physiklehrer, hat aus dem Fenster
+      des NW-Trakts eine improvisierte Seilbahn gespannt – „ideal für den
+      Fallversuch!“ – und schnallt dich, bevor du protestieren kannst, in
+      einen selbstgenähten Fallschirm, der sich erst zwei Meter über dem
+      Boden mit einem lauten Rucken öffnet und dich einmal wild durch die
+      Luft wirbeln lässt, mit dem du reichlich unsanft direkt vor der
+      Cafeteria landest.
   - from: pausenhalle
-    to: keller
+    to: nw_trakt
     extra: >-
-      Die Treppe zum Keller liegt direkt neben dem Ausgang der Pausenhalle.
+      Die Treppe zum NW-Trakt liegt gleich neben dem Ausgang der
+      Pausenhalle.
   - from: pausenhalle
     to: ziel
     extra: >-
       Die Cafeteria-Theke ist nur einen Sprung von der Pausenhalle
       entfernt.
+  - from: bibliothek
+    to: nw_trakt
+    extra: >-
+      Die Bibliothekarin packt dich unsanft am Kragen und wirft dich
+      kurzerhand aus der Seitentür ins Treppenhaus – und du stehst
+      benommen plötzlich mitten im NW-Trakt.
