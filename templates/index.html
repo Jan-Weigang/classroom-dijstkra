@@ -204,8 +204,8 @@ function buildGraphUtil(graph){
   graph.order.forEach(node=>incidentByNode[node]=[]);
   edges.forEach(edge=>{
     edgeById[edge.id]=edge;
-    incidentByNode[edge.from].push({e:edge,to:edge.to,direction:"forward"});
-    incidentByNode[edge.to].push({e:edge,to:edge.from,direction:"backward"});
+    if(edge.forward) incidentByNode[edge.from].push({e:edge,to:edge.to,direction:"forward"});
+    if(edge.backward) incidentByNode[edge.to].push({e:edge,to:edge.from,direction:"backward"});
   });
   return {edges,edgeById,incident:node=>incidentByNode[node]||[]};
 }

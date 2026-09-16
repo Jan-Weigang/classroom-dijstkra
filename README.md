@@ -85,7 +85,12 @@ Das gesamte Netz liegt in `game_data.yaml`. Auf der obersten Ebene sind nur
   `intro` für den Startbildschirm trägt), genau einer `goal: true`.
 - `edges` verbindet jeweils `from` und `to` und trägt den gesamten
   abgespielten Text direkt: `forwardText` für den Weg von `from` nach `to`,
-  `backwardText` für die Gegenrichtung. Feste Layoutangaben gibt es nicht.
+  `backwardText` für die Gegenrichtung. Mindestens eines der beiden Felder
+  ist Pflicht, das jeweils andere ist optional: fehlt es, ist diese
+  Richtung schlicht nicht wählbar – weder in der Wegauswahl noch serverseitig
+  bei der Aktion. So lassen sich Sackgassen ohne Rückweg modellieren, etwa
+  Kanten, die absichtlich nicht zurück zum Start führen. Feste
+  Layoutangaben gibt es nicht.
 
 Die Reihenfolge der Knoten in der YAML bestimmt die stabile Reihenfolge in der
 Tabelle. Die Koordinaten berechnet Flask bei jedem Serverstart automatisch mit
