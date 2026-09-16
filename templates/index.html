@@ -18,7 +18,9 @@
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%}
   body{background:radial-gradient(1200px 600px at 85% -10%,#163331 0%,transparent 60%),var(--bg);
-    color:var(--text);font-family:var(--font-ui);line-height:1.5;-webkit-font-smoothing:antialiased}
+    color:var(--text);font-family:var(--font-ui);line-height:1.5;-webkit-font-smoothing:antialiased;
+    filter:none;transition:filter .4s ease}
+  body.wait-mode{filter:grayscale(.9) brightness(.82)}
   button{font-family:var(--font-ui);cursor:pointer}
   .btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 15px;border-radius:9px;font-size:.9rem;font-weight:500}
   .btn:hover{border-color:var(--brass-deep);color:#fff}
@@ -406,8 +408,11 @@ async function startStudent(room,name){
       if(!me){
         $("s_passage").classList.remove("typing");
         connectionStatus("s","Sitzung abgelaufen – Seite neu laden",false);
+        document.body.classList.add("wait-mode");
         return;
       }
+
+      document.body.classList.toggle("wait-mode",me.status!=="waiting");
 
       const paused=state.phase==="choosing";
       $("s_pauseBanner").classList.toggle("show",paused&&me.status!=="stopped"&&me.status!=="finished");
