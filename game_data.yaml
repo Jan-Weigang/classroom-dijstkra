@@ -137,11 +137,6 @@ edges:
       selbstgebastelte Medaille aus Alufolie um den Hals hängt, und die
       komplette gegnerische Mannschaft dir, sportlich wie enttäuscht
       zugleich, im Vorbeirollen artig applaudiert.
-    backwardText: >-
-      Mit dem Donut sicher in der Hand lässt du dich vom Mattenwagen
-      herunter, winkst noch einmal in die jubelnde Menge, und gehst,
-      angefeuert von entfernten Sprechchören, zurück in die Sporthalle,
-      wo bereits das nächste Spiel in vollem Gange ist.
   - from: nw_trakt
     to: hof
     forwardText: >-
@@ -192,12 +187,6 @@ edges:
       Hechtsprung wirfst du dich hindurch, hinaus zur rettenden
       Cafeteria-Theke, während hinter dir das Gefecht unvermindert
       weitergeht und die Bibliothekarin schon nachlädt.
-    backwardText: >-
-      Mit dem Donut sicher in der Hand kämpfst du dich noch einmal zurück
-      durch das ZWIIING-Kreuzfeuer der Regalreihen, tief geduckt, an
-      splitternden Regalbrettern und verstreuten Karteikarten vorbei,
-      zurück in die Bibliothek, wo die Schlacht unvermindert weitergeht
-      und die Bibliothekarin bereits nachlädt.
   - from: bibliothek
     to: hof
     forwardText: >-
@@ -224,7 +213,3 @@ edges:
       flüsterst ihnen knapp die echte Lösung zu, drückst für sie noch den
       Knopf, erntest einen kollektiven Freudenschrei und schlüpfst rasch
       weiter zur Cafeteria-Theke.
-    backwardText: >-
-      Mit dem Donut sicher in der Hand drehst du dich noch einmal um und
-      schlenderst zurück zum Hof, wo dich die Drittklässler am
-      Wasserspender bereits erwartungsvoll und ziemlich dankbar erwarten.
