@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Der letzte Donut — Dijkstra zum Ausspielen</title>
+<style>
+  :root{
+    --bg:#0e1e1d;--panel:#142826;--panel-2:#0b1918;--line:#26403d;
+    --text:#dbe9e6;--muted:#8aa3a0;
+    --paper:#ece2cc;--paper-line:#d8c9a4;--paper-ink:#2a2416;--paper-soft:#6a5f45;
+    --brass:#cf9f45;--brass-deep:#a87c24;--cyan:#48b3a8;--cyan-deep:#2c7d75;
+    --hot:#ef7b3d;--danger:#d3736b;--ok:#7bbf7b;--pink:#df4f91;--pink-deep:#9f285f;
+    --font-story:"Iowan Old Style","Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --font-ui:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-num:ui-monospace,"SF Mono","SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{background:radial-gradient(1200px 600px at 85% -10%,#163331 0%,transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--font-ui);line-height:1.5;-webkit-font-smoothing:antialiased}
+  button{font-family:var(--font-ui);cursor:pointer}
+  .btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 15px;border-radius:9px;font-size:.9rem;font-weight:500}
+  .btn:hover{border-color:var(--brass-deep);color:#fff}
+  .btn.primary{background:var(--brass);border-color:var(--brass);color:#20180a;font-weight:600}
+  .btn.ghost{background:transparent}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  input[type=text]{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 12px;font-size:1rem;font-family:var(--font-ui)}
+  input:focus-visible,.btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+  /* ---------- Startbildschirm ---------- */
+  #start{max-width:620px;margin:0 auto;padding:48px 22px 60px}
+  #start h1{font-family:var(--font-story);font-weight:600;font-size:clamp(1.6rem,4vw,2.4rem);margin:0 0 6px;color:var(--paper)}
+  #start .lead{color:var(--muted);margin:0 0 26px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card + .card{margin-top:16px}
+  .card h2{margin:0 0 4px;font-size:1.05rem;font-family:var(--font-story);color:var(--paper)}
+  .card p.sub{margin:0 0 14px;color:var(--muted);font-size:.86rem}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .row input[type=text]{flex:1;min-width:120px}
+  .roombig{font-family:var(--font-num);font-size:1.4rem;letter-spacing:.18em;color:var(--brass);text-transform:uppercase}
+  .connline{margin-top:14px;font-size:.84rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .led{width:9px;height:9px;border-radius:50%;background:#5a6f6c;flex:none}
+  .led.on{background:var(--cyan);box-shadow:0 0 0 3px rgba(72,179,168,.2)}
+  .led.err{background:var(--danger)}
+  .note{font-size:.8rem;color:var(--muted);margin-top:10px;line-height:1.5}
+  .hidden{display:none !important}
+
+  /* ---------- gemeinsame App-Struktur ---------- */
+  .app{max-width:1220px;margin:0 auto;padding:18px 16px 60px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    padding-bottom:12px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+  .brand h1{font-family:var(--font-story);font-weight:600;font-size:clamp(1.15rem,2.2vw,1.6rem);margin:0;color:var(--paper)}
+  .brand p{margin:2px 0 0;color:var(--muted);font-size:.82rem}
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 11px;background:var(--panel-2)}
+  .pill.online{color:var(--text)}
+  .cost{font-family:var(--font-num);background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:6px 12px;display:flex;gap:8px;align-items:baseline}
+  .cost b{font-size:1.25rem;color:var(--brass);font-weight:600}.cost span{color:var(--muted);font-size:.7rem}
+
+  /* ---------- Schüleransicht ---------- */
+  .grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  .story{background:var(--paper);color:var(--paper-ink);border-radius:12px;border:1px solid var(--paper-line);
+    box-shadow:0 18px 40px -24px rgba(0,0,0,.7),inset 0 0 0 6px rgba(255,255,255,.35);padding:22px 26px 24px;position:relative}
+  .chapter{margin-bottom:4px;font-size:.76rem;color:var(--paper-soft);display:flex;align-items:center;gap:8px}
+  .chapter .dot{width:9px;height:9px;border-radius:50%;background:var(--brass);box-shadow:0 0 0 4px rgba(207,159,69,.2)}
+  .chapter b{color:var(--paper-ink);font-family:var(--font-story);font-size:1.1rem}
+  .blurb{margin:0 0 12px;color:var(--paper-soft);font-style:italic;font-family:var(--font-story)}
+  .reading{min-height:9.5em}
+  .decision{margin-top:18px;padding:13px 14px 15px;border:1px solid rgba(159,40,95,.5);border-radius:10px;background:rgba(223,79,145,.1)}
+  .statusline{margin:12px 0 0;color:var(--paper-soft);font-family:var(--font-story);font-style:italic}
+  .passage{font-family:var(--font-story);font-size:1.16rem;line-height:1.7;min-height:5.5em;white-space:pre-wrap}
+  .passage.typing::after{content:"▍";margin-left:1px;color:var(--brass-deep)}
+  @media (prefers-reduced-motion:no-preference){.passage.typing::after{animation:blink 1s steps(2,start) infinite}}
+  @keyframes blink{50%{opacity:0}}
+  .banner{margin-top:12px;padding:9px 13px;border-radius:8px;font-size:.9rem;display:none}
+  .banner.show{display:block}
+  .banner.pause,.banner.stop,.banner.win{background:rgba(223,79,145,.22);border:1px solid var(--pink-deep);color:#4d1430;font-weight:600}
+  .edgemeter{margin-top:14px;height:22px;display:flex;align-items:center;gap:10px;color:var(--paper-soft);font-size:.75rem}
+  .edgemeter .track{flex:1;height:7px;background:rgba(0,0,0,.09);border-radius:99px;overflow:hidden}
+  .edgemeter .fill{height:100%;width:0;background:linear-gradient(90deg,var(--brass),var(--brass-deep))}
+  .edgemeter .num{font-family:var(--font-num);color:var(--paper-ink)}
+  .edgemeter.hidden{visibility:hidden}
+  .choices{margin-top:18px;display:grid;gap:9px}
+  .choices .hint{font-size:.82rem;color:var(--pink-deep);font-weight:700}
+  .choice{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:5px 14px;text-align:left;
+    background:#f6efdd;border:1px solid var(--paper-line);color:var(--paper-ink);border-radius:10px;padding:11px 14px}
+  .choice:hover{border-color:var(--brass-deep)}
+  .choice:disabled{opacity:.5;cursor:not-allowed}
+  .choice .to{font-family:var(--font-story);font-size:1.02rem;font-weight:600}
+  .choice .w{font-family:var(--font-num);font-size:.98rem;color:var(--brass-deep);text-align:right;align-self:center}
+  .choice .w small{display:block;font-size:.58rem;color:var(--paper-soft);font-family:var(--font-ui)}
+  .choice .bar{grid-column:1/-1;height:6px;background:rgba(0,0,0,.08);border-radius:99px;overflow:hidden}
+  .choice .bar i{display:block;height:100%;background:var(--brass)}
+  .waitmsg{margin-top:14px;color:var(--paper-soft);font-style:italic;font-family:var(--font-story)}
+
+  .tools{display:grid;gap:16px}
+  .tools .card h2{font-family:var(--font-story)}
+  .mapwrap{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:6px}
+  svg.map{width:100%;height:auto;display:block}
+  .route-base{stroke:#294541;stroke-width:2;opacity:.42}
+  .route-taken{stroke:var(--brass);stroke-width:7;opacity:1}
+  .route-current{stroke:var(--pink);stroke-width:7;stroke-dasharray:10 7;opacity:1}
+  .route-node{fill:var(--panel);stroke:var(--line);stroke-width:2}
+  .route-node.here{fill:var(--brass);stroke:var(--paper);stroke-width:3}
+  table.sheet{width:100%;border-collapse:collapse;font-size:.85rem}
+  table.sheet th,table.sheet td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left}
+  table.sheet th{color:var(--muted);font-weight:500;font-size:.72rem}
+  table.sheet td.node{font-weight:600}
+  table.sheet td.num{font-family:var(--font-num)}
+  table.sheet tr.here td{color:var(--brass)}
+  table.sheet tr.highlight td.dist{background:#b51f35;color:#fff;font-weight:800;box-shadow:0 0 0 2px rgba(223,62,72,.28)}
+  .playBtn{border:none;border-radius:10px;padding:10px 20px;font-size:1rem;font-weight:700;background:var(--cyan);color:#06201d}
+  .roomtag{font-family:var(--font-num);letter-spacing:.14em;color:var(--brass);font-size:1.1rem}
+</style>
+</head>
+<body>
+
+<!-- ================= STARTBILDSCHIRM ================= -->
+<div id="start">
+  <h1>Der letzte Donut</h1>
+  <p class="lead">Dijkstra zum gemeinsamen Ausspielen.</p>
+
+  <div class="card">
+    <h2>Mitspielen</h2>
+    <p class="sub">Erstelle einen Raum oder tritt mit einem vorhandenen Code bei.</p>
+    <div class="row">
+      <input type="text" id="joinName" placeholder="Dein Name" maxlength="24" autocomplete="off" required aria-required="true">
+      <input type="text" id="joinRoom" placeholder="Raum-Code" maxlength="6" autocomplete="off" style="text-transform:uppercase;max-width:150px">
+      <button class="btn primary" id="joinBtn">Beitreten</button>
+      <button class="btn" id="createBtn">Neuen Raum erstellen</button>
+    </div>
+  </div>
+
+  <div class="connline"><span class="led" id="startLed"></span><span id="startMsg">Bereit.</span></div>
+  <p class="note">Hinweis: Flask verwaltet Räume, Spieler:innen und Spielzustand zentral.
+  Alle Geräte müssen diesen Flask-Server erreichen und denselben Raum-Code verwenden;
+  eine Internetverbindung oder ein externer Vermittler ist nicht nötig.</p>
+</div>
+
+<!-- ================= SCHÜLERANSICHT ================= -->
+<div id="studentApp" class="app hidden">
+  <header class="top">
+    <div class="brand"><h1 id="s_title">Der letzte Donut</h1><p>Kantengewicht = Textlänge. Volle Kosten pro Weg – auch zurück.</p></div>
+    <div class="controls">
+      <span class="pill" id="s_conn"><span class="led"></span><span id="s_connText">verbinde …</span></span>
+      <span class="pill">Raum <b id="s_room" class="roomtag" style="font-size:.95rem">—</b></span>
+      <span class="pill"><b id="s_students">0</b>&nbsp;verbunden</span>
+      <span class="pill">Schritt&nbsp;<b id="s_step">0</b></span>
+      <div class="cost"><b id="s_cost">0</b><span>deine&nbsp;Kosten</span></div>
+      <button class="playBtn" id="s_play" disabled>▶ Play</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="story">
+      <div class="chapter"><span class="dot"></span><span>Du bist:</span><b id="s_nodeName">—</b></div>
+      <p class="blurb" id="s_blurb"></p>
+      <div class="reading">
+        <p class="passage" id="s_passage" aria-live="polite"></p>
+        <div class="edgemeter hidden" id="s_meter"><span>Weg:</span><div class="track"><div class="fill" id="s_fill"></div></div>
+          <span class="num"><span id="s_now">0</span> / <span id="s_tot">0</span></span></div>
+      </div>
+      <div class="decision">
+        <p class="statusline" id="s_statusText"></p>
+        <div class="banner pause" id="s_pauseBanner"></div>
+        <div class="banner stop" id="s_stopBanner"></div>
+        <div class="banner win" id="s_winBanner"></div>
+        <div class="choices" id="s_choices"></div>
+      </div>
+    </section>
+
+    <div class="tools">
+      <section class="card">
+        <h2>Dein Weg</h2><p class="sub" style="color:var(--muted)">Gold = gegangen, Pink = aktuell unterwegs.</p>
+        <div class="mapwrap"><svg class="map" id="s_map" role="img" aria-label="Graph">
+          <g id="s_edges"></g><g id="s_nodes"></g></svg></div>
+      </section>
+      <section class="card">
+        <h2>Gemeinsame Tabelle</h2><p class="sub" style="color:var(--muted)">Füllt sich automatisch für alle, sobald jemand kürzer ankommt.</p>
+        <table class="sheet"><thead><tr><th>Knoten</th><th>Distanz</th><th>Vorgänger</th><th>Eingetragen von</th></tr></thead><tbody id="s_sheet"></tbody></table>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ===================================================================
+   GRAPH & STORY – werden vom Flask-Server geladen
+   =================================================================== */
+let GRAPH=null,U=null,gamePromise=null;
+function buildGraphUtil(graph){
+  const edges=graph.edges;
+  const edgeById={};
+  const maxW=Math.max(...edges.flatMap(edge=>[edge.forward.w,edge.backward.w]));
+  const incidentByNode={};
+  graph.order.forEach(node=>incidentByNode[node]=[]);
+  edges.forEach(edge=>{
+    edgeById[edge.id]=edge;
+    incidentByNode[edge.from].push({e:edge,to:edge.to,direction:"forward"});
+    incidentByNode[edge.to].push({e:edge,to:edge.from,direction:"backward"});
+  });
+  return {edges,edgeById,maxW,incident:node=>incidentByNode[node]||[]};
+}
+async function loadGame(){
+  if(!gamePromise){
+    gamePromise=api("/api/game").then(data=>{
+      GRAPH=data;
+      U=buildGraphUtil(data);
+      $("s_map").setAttribute("viewBox",data.viewBox.join(" "));
+      return data;
+    });
+  }
+  return gamePromise;
+}
+
+/* ===================================================================
+   VERBINDUNG – SSE vom Flask-Server, Aktionen per HTTP
+   =================================================================== */
+async function api(path,options={}){
+  const config={...options,headers:{"Content-Type":"application/json",...(options.headers||{})}};
+  const response=await fetch(path,config);
+  if(!response.ok){
+    const body=await response.text();
+    throw new Error(body||("HTTP "+response.status));
+  }
+  return response.json();
+}
+function connectionStatus(prefix,message,online){
+  $(prefix+"_connText").textContent=message;
+  $(prefix+"_conn").querySelector(".led").className="led"+(online?" on":" err");
+  $(prefix+"_conn").classList.toggle("online",online);
+}
+const NS="http://www.w3.org/2000/svg";
+function el(tag,attrs,parent){
+  const element=document.createElementNS(NS,tag);
+  for(const key in attrs)element.setAttribute(key,attrs[key]);
+  if(parent)parent.appendChild(element);
+  return element;
+}
+
+/* ===================================================================
+   RAUMSTART
+   =================================================================== */
+const $=(id)=>document.getElementById(id);
+function showStudent(){$("start").classList.add("hidden");$("studentApp").classList.remove("hidden");}
+function setStartStatus(msg,cls){$("startMsg").textContent=msg;const l=$("startLed");l.className="led"+(cls?" "+cls:"");}
+function playerName(){
+  const name=($("joinName").value||"").trim();
+  if(!name){
+    setStartStatus("Bitte gib zuerst deinen Namen ein.","err");
+    $("joinName").focus();
+    return null;
+  }
+  return name;
+}
+
+$("joinBtn").addEventListener("click",()=>{
+  const name=playerName();
+  if(!name)return;
+  const room=($("joinRoom").value||"").trim().toUpperCase();
+  if(room.length<3){setStartStatus("Bitte gültigen Raum-Code eingeben.","err");return;}
+  startStudent(room,name);
+});
+$("createBtn").addEventListener("click",async()=>{
+  const name=playerName();
+  if(!name)return;
+  setStartStatus("Erzeuge Raum …","");
+  try{
+    const created=await api("/api/rooms",{method:"POST",body:"{}"});
+    $("joinRoom").value=created.room;
+    await startStudent(created.room,name);
+  }catch(e){setStartStatus("Flask-Server nicht erreichbar.","err");}
+});
+$("joinRoom").addEventListener("keydown",e=>{if(e.key==="Enter")$("joinBtn").click();});
+$("joinName").addEventListener("keydown",e=>{if(e.key==="Enter"&&$("joinRoom").value)$("joinBtn").click();});
+$("joinRoom").value=new URLSearchParams(location.search).get("room")||"";
+
+/* ===================================================================
+   SCHÜLERANSICHT – SSE hinein, HTTP-Aktionen hinaus
+   =================================================================== */
+async function startStudent(room,name){
+  setStartStatus("Trete Raum bei …","");
+  try{
+    await loadGame();
+    $("s_title").textContent=GRAPH.title;
+    $("s_room").textContent=room;
+    buildStudentSheet();
+    const joined=await api("/api/rooms/"+encodeURIComponent(room)+"/join",{
+      method:"POST",body:JSON.stringify({name})
+    });
+    const pid=joined.pid;
+    let seq=1,latest=joined.state,viewSig="";
+    const storyAnimation={key:"",shown:0,target:0,text:"",total:0,baseCost:0,typing:false,lastTime:0,frame:0};
+    const events=new EventSource("/api/rooms/"+encodeURIComponent(room)+"/events?pid="+encodeURIComponent(pid));
+
+    history.replaceState(null,"","?room="+encodeURIComponent(room));
+    $("s_passage").textContent=GRAPH.intro;
+    showStudent();
+
+    function setConnected(ok){
+      connectionStatus("s",ok?"SSE verbunden":"Verbindung unterbrochen",ok);
+    }
+    events.addEventListener("open",()=>setConnected(true));
+    events.addEventListener("state",event=>{
+      latest=JSON.parse(event.data);
+      setConnected(true);
+      applyState(latest);
+    });
+    events.onerror=()=>setConnected(false);
+
+    async function sendAction(action){
+      try{
+        latest=await api("/api/rooms/"+room+"/action",{
+          method:"POST",
+          body:JSON.stringify({...action,pid,seq:seq++})
+        });
+        applyState(latest);
+      }catch(e){setConnected(false);}
+    }
+
+    $("s_play").addEventListener("click",async()=>{
+      try{
+        latest=await api("/api/rooms/"+room+"/play",{
+          method:"POST",body:JSON.stringify({pid})
+        });
+        applyState(latest);
+      }catch(e){
+        $("s_pauseBanner").textContent="Play ist erst möglich, wenn alle Wahlberechtigten gewählt haben.";
+        $("s_pauseBanner").classList.add("show");
+      }
+    });
+    window.addEventListener("beforeunload",()=>{
+      const body=new Blob([JSON.stringify({t:"leave",pid,seq:seq++})],{type:"application/json"});
+      navigator.sendBeacon("/api/rooms/"+room+"/action",body);
+    });
+
+    function paintStoryProgress(){
+      const shown=Math.min(Math.floor(storyAnimation.shown),storyAnimation.target);
+      $("s_passage").textContent=[...storyAnimation.text].slice(0,shown).join("");
+      $("s_passage").classList.toggle("typing",storyAnimation.typing);
+      $("s_meter").classList.remove("hidden");
+      $("s_tot").textContent=storyAnimation.total;
+      $("s_now").textContent=shown;
+      $("s_fill").style.width=(100*shown/storyAnimation.total)+"%";
+      $("s_cost").textContent=storyAnimation.baseCost+shown;
+    }
+
+    function advanceStory(now){
+      if(!storyAnimation.lastTime)storyAnimation.lastTime=now;
+      const elapsed=now-storyAnimation.lastTime;
+      storyAnimation.lastTime=now;
+      storyAnimation.shown=Math.min(
+        storyAnimation.target,
+        storyAnimation.shown+elapsed/GRAPH.playback.tickMilliseconds
+      );
+      paintStoryProgress();
+      if(storyAnimation.shown<storyAnimation.target){
+        storyAnimation.frame=requestAnimationFrame(advanceStory);
+      }else{
+        storyAnimation.frame=0;
+        storyAnimation.lastTime=0;
+      }
+    }
+
+    function renderProgress(me,state){
+      $("s_step").textContent=state.step;
+      const edge=me&&me.textEdgeId?U.edgeById[me.textEdgeId]:null;
+      const traversal=edge&&me.textDirection?edge[me.textDirection]:null;
+      if(!traversal){
+        if(storyAnimation.frame)cancelAnimationFrame(storyAnimation.frame);
+        storyAnimation.key="";storyAnimation.shown=0;storyAnimation.target=0;storyAnimation.frame=0;
+        $("s_passage").textContent=GRAPH.intro;
+        $("s_passage").classList.remove("typing");
+        $("s_meter").classList.add("hidden");
+        $("s_cost").textContent=me?me.cost:0;
+        return;
+      }
+      const key=me.textEdgeId+":"+me.textDirection;
+      const target=Math.min(me.textProgress,traversal.w);
+      if(storyAnimation.key!==key||target<storyAnimation.shown){
+        if(storyAnimation.frame)cancelAnimationFrame(storyAnimation.frame);
+        storyAnimation.key=key;storyAnimation.shown=0;storyAnimation.frame=0;storyAnimation.lastTime=0;
+      }
+      storyAnimation.text=traversal.text;
+      storyAnimation.total=traversal.w;
+      storyAnimation.target=target;
+      storyAnimation.baseCost=me.status==="traversing"?me.cost:Math.max(0,me.cost-traversal.w);
+      storyAnimation.typing=state.phase==="playing"&&me.status==="traversing";
+      paintStoryProgress();
+      if(storyAnimation.shown<storyAnimation.target&&!storyAnimation.frame){
+        storyAnimation.frame=requestAnimationFrame(advanceStory);
+      }
+    }
+
+    function applyState(state){
+      const me=state.players[pid];
+      $("s_students").textContent=Object.keys(state.players).length;
+      $("s_play").disabled=!state.canPlay;
+      renderSheet(state.board,new Set(state.highlightNodes||[]));
+      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId);
+      renderProgress(me,state);
+
+      if(!me){
+        $("s_passage").classList.remove("typing");
+        connectionStatus("s","Sitzung abgelaufen – Seite neu laden",false);
+        return;
+      }
+
+      const paused=state.phase==="choosing";
+      $("s_pauseBanner").classList.toggle("show",paused&&me.status!=="stopped"&&me.status!=="finished");
+      if(paused){
+        if(me.status==="traversing"){
+          $("s_pauseBanner").textContent="Pause bei Schritt "+state.pausedAtStep+": Ein Weg ist angekommen. Dein Text läuft beim nächsten Play exakt hier weiter.";
+        }else if(state.canPlay){
+          $("s_pauseBanner").textContent="Alle sind bereit – jetzt kann jemand Play drücken.";
+        }else{
+          $("s_pauseBanner").textContent="Pause: Die angekommenen Schüler wählen ihren nächsten Weg.";
+        }
+      }
+
+      const sig=me.status+"|"+me.node+"|"+(me.edgeId||"");
+      if(me.status==="traversing"){
+        $("s_stopBanner").classList.remove("show");
+        $("s_winBanner").classList.remove("show");
+        $("s_nodeName").textContent="unterwegs …";
+        $("s_blurb").textContent="";
+        $("s_statusText").textContent=state.phase==="playing"?"Der Weg läuft …":"Dein Weg wartet auf das nächste Play.";
+        $("s_choices").innerHTML="";
+      }else if(me.status==="waiting"){
+        $("s_passage").classList.remove("typing");
+        $("s_stopBanner").classList.remove("show");
+        $("s_winBanner").classList.remove("show");
+        if(sig!==viewSig){viewSig=sig;renderWaiting(me);}
+      }else if(me.status==="ready"){
+        $("s_passage").classList.remove("typing");
+        $("s_nodeName").textContent=GRAPH.nodes[me.node].name;
+        $("s_blurb").textContent=GRAPH.nodes[me.node].blurb||"";
+        $("s_statusText").textContent="Weg gewählt.";
+        $("s_choices").innerHTML='<p class="waitmsg">Weg gewählt. Warte auf die anderen oder drücke Play, sobald alle bereit sind.</p>';
+      }else if(me.status==="stopped"){
+        $("s_passage").classList.remove("typing");
+        if(sig!==viewSig){viewSig=sig;renderStopped(me,state);}
+      }else if(me.status==="finished"){
+        $("s_passage").classList.remove("typing");
+        $("s_stopBanner").classList.remove("show");
+        $("s_winBanner").classList.add("show");
+        $("s_winBanner").textContent="Donut erreicht – dein Weg kostet "+me.cost+" Zeichen.";
+        $("s_nodeName").textContent=GRAPH.nodes[GRAPH.goalNode].name;
+        $("s_blurb").textContent=GRAPH.nodes[GRAPH.goalNode].blurb;
+        $("s_statusText").textContent="Geschafft.";
+        $("s_choices").innerHTML="";
+      }
+    }
+
+    function renderWaiting(me){
+      const node=GRAPH.nodes[me.node];
+      $("s_nodeName").textContent=node.name;
+      $("s_blurb").textContent=node.blurb||"";
+      $("s_statusText").textContent=me.node===GRAPH.startNode?"Wähle deinen ersten Weg.":"Du bist angekommen. Wohin als Nächstes?";
+      const box=$("s_choices");
+      box.innerHTML='<div class="hint">Wähle deinen nächsten Weg (Zahl = Kosten):</div>';
+      U.incident(me.node).forEach(({e,to,direction})=>{
+        const weight=e[direction].w;
+        const button=document.createElement("button");
+        button.className="choice";
+        button.innerHTML='<span class="to">'+GRAPH.nodes[to].name+'</span><span class="w">'+weight+'<small>Zeichen</small></span><span class="bar"><i style="width:'+(100*weight/U.maxW)+'%"></i></span>';
+        button.onclick=()=>sendAction({t:"choose",edgeId:e.id});
+        box.appendChild(button);
+      });
+    }
+
+    function renderStopped(me,state){
+      const best=state.board[me.node].dist;
+      const bestName=state.board[me.node].by||"jemand";
+      $("s_nodeName").textContent=GRAPH.nodes[me.node].name;
+      $("s_blurb").textContent=GRAPH.nodes[me.node].blurb||"";
+      $("s_statusText").textContent="";
+      $("s_stopBanner").classList.add("show");
+      $("s_stopBanner").textContent="Im Gang vor dir ist "+bestName+" bereits unterwegs. Zu spät – der Donut ist weg. Dein Weg kostete "+me.cost+" Zeichen; in der Tabelle steht bereits "+best+".";
+      $("s_winBanner").classList.remove("show");
+      $("s_choices").innerHTML="";
+    }
+
+    setConnected(true);
+    applyState(latest);
+  }catch(e){
+    setStartStatus(e.message.includes("404")?"Raum nicht gefunden.":"Flask-Server nicht erreichbar.","err");
+  }
+}
+
+/* ---- Schüler: Tabelle & Karte ---- */
+function buildStudentSheet(){
+  const tb=$("s_sheet"); tb.innerHTML="";
+  GRAPH.order.forEach(id=>{ const tr=document.createElement("tr"); tr.dataset.node=id;
+    tr.innerHTML='<td class="node">'+GRAPH.nodes[id].name+'</td><td class="num dist">∞</td><td class="prev">–</td><td class="owner">–</td>'; tb.appendChild(tr); });
+}
+function renderSheet(board,signaledNodes){
+  GRAPH.order.forEach(id=>{ const tr=$("s_sheet").querySelector('tr[data-node="'+id+'"]'); if(!tr)return;
+    const b=board[id],next=b.dist===null?"∞":String(b.dist);
+    tr.querySelector(".dist").textContent=next;
+    tr.querySelector(".prev").textContent=b.prev?GRAPH.nodes[b.prev].name:(id===GRAPH.startNode?"Start":"–");
+    tr.querySelector(".owner").textContent=b.by||"–";
+    tr.classList.toggle("highlight",signaledNodes.has(id));
+  });
+}
+function renderStudentMap(here,path,currentEdge){
+  const eL=$("s_edges"),nL=$("s_nodes"); eL.innerHTML="";nL.innerHTML="";
+  const taken=new Set(path||[]),R=13;
+  U.edges.forEach(e=>{ const a=GRAPH.nodes[e.from],b=GRAPH.nodes[e.to];
+    const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),ux=dx/d,uy=dy/d;
+    const cls=e.id===currentEdge?"route-current":(taken.has(e.id)?"route-taken":"route-base");
+    el("line",{x1:a.x+ux*R,y1:a.y+uy*R,x2:b.x-ux*R,y2:b.y-uy*R,class:cls},eL);
+  });
+  GRAPH.order.forEach(id=>{const n=GRAPH.nodes[id];
+    el("circle",{cx:n.x,cy:n.y,r:13,class:"route-node"+(id===here?" here":"")},nL);
+  });
+}
+</script>
+</body>
+</html>
