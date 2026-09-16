@@ -279,6 +279,7 @@ $("createBtn").addEventListener("click",async()=>{
 $("joinRoom").addEventListener("keydown",e=>{if(e.key==="Enter")$("joinBtn").click();});
 $("joinName").addEventListener("keydown",e=>{if(e.key==="Enter"&&$("joinRoom").value)$("joinBtn").click();});
 $("joinRoom").value=new URLSearchParams(location.search).get("room")||"";
+$("joinName").focus();
 
 /* ===================================================================
    SCHÜLERANSICHT – SSE hinein, HTTP-Aktionen hinaus

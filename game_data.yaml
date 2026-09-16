@@ -9,24 +9,22 @@ nodes:
       Schulküche wartet der allerletzte Schoko-Donut. Finde den kürzesten Weg
       zur Theke – bevor es klingelt.
     entryText: >-
-      Du bist wieder am Ausgangspunkt angekommen. Die Uhr über dem Sekretariat
-      tickt unbarmherzig weiter, während sich der Flur langsam mit dem
-      vertrauten Lärm der großen Pause füllt.
+      Du bist wieder am Ausgangspunkt. Der Flur füllt sich mit dem Lärm der
+      großen Pause, die Uhr tickt.
     exitText: >-
-      Du wirfst noch einen letzten Blick auf die drei offenen Türen, atmest
-      tief durch und entscheidest dich, ohne weiter zu zögern, für einen der
-      Wege, die vor dir liegen.
+      Du wirfst einen letzten Blick auf die drei offenen Türen und
+      entscheidest dich sofort für einen Weg.
 
   hausmeister:
     name: Der Hausmeister
     short: Hausm.
     blurb: Strenge Autorität – und überraschend hilfsbereit.
     entryText: >-
-      Du erreichst Hausmeister Brzenska. Kurzer Blick, kurzes Nicken, kein
-      Wort zu viel.
+      Du erreichst Hausmeister Brzenska. Kurzer Blick, kurzes Nicken, sein
+      Schlüsselbund klappert laut.
     exitText: >-
-      Er zeigt wortlos auf die nächste Tür und wendet sich schon wieder
-      seinem Kaffee zu.
+      Er zeigt wortlos auf die nächste Tür und wendet sich wieder seinem
+      dampfenden Kaffeebecher zu.
 
   lehrer:
     name: Der Lehrer mit Redebedarf
@@ -34,28 +32,21 @@ nodes:
     blurb: Er meint es gut. Sehr, sehr ausführlich gut.
     entryText: >-
       Du landest bei Herrn Dr. Vogelsang. „Ah, gut, dass ich Sie sehe – nur
-      ganz kurz!“, beginnt er und holt tief Luft, bevor er zu einer
-      Geschichte über sein Referendariat ansetzt, die garantiert nicht kurz
-      bleiben wird, während du innerlich die Sekunden bis zum Pausenende
-      mitzählst.
+      ganz kurz!“, beginnt er sofort.
     exitText: >-
-      Zwischen zwei ausschweifenden Nebensätzen über die gute alte Zeit
-      entdeckst du eine winzige Gesprächspause, murmelst eine Entschuldigung
-      und ziehst weiter, bevor er den Faden wiederfindet.
+      Zwischen zwei Nebensätzen über seine Referendarzeit entdeckst du eine
+      winzige Pause und ziehst weiter.
 
   bibliothek:
     name: Die Bibliothek
     short: Biblio.
     blurb: Angeblich der leiseste Ort der Schule. Angeblich.
     entryText: >-
-      Du schlüpfst durch die schwere Bibliothekstür. Zwischen den
-      Regalreihen riecht es nach altem Papier, irgendwo tickt eine Uhr viel
-      zu laut, und die Bibliothekarin blickt kurz über ihre Brille, sagt
-      aber nichts.
+      Du schlüpfst durch die schwere Bibliothekstür. Zwischen den Regalen
+      riecht es nach altem Papier.
     exitText: >-
-      Du legst das Buch, das du nie aufgeschlagen hast, lautlos zurück ins
-      Regal und schleichst so leise wie möglich zur nächsten Tür hinaus,
-      bevor jemand „Pssst“ sagen kann.
+      Du legst das ungelesene Buch zurück ins Regal und schleichst so leise
+      wie möglich zur nächsten Tür.
 
   keller:
     name: Die Kellertreppe
@@ -63,10 +54,10 @@ nodes:
     blurb: Kühl, eng, kurz. Fast zu praktisch.
     entryText: >-
       Du erreichst die kühle Kellertreppe und nimmst die letzten Stufen mit
-      einem Satz, das Geländer eiskalt unter der Hand.
+      einem einzigen großen Satz.
     exitText: >-
-      Du stößt dich vom Geländer ab und verschwindest durch den nächsten
-      schmalen, muffigen Durchgang.
+      Du stößt dich vom eiskalten Geländer ab und verschwindest durch den
+      nächsten schmalen Durchgang.
 
   ziel:
     goal: true
@@ -74,45 +65,107 @@ nodes:
     short: Theke
     blurb: Warm, schokoladig, greifbar nah.
     entryText: >-
-      Du erreichst die Cafeteria-Theke. Der warme Duft von Schokolade hängt
-      in der Luft, und der letzte Schoko-Donut liegt direkt vor dir, als
-      hätte er nur auf dich gewartet.
+      Du erreichst die Cafeteria-Theke. Der Duft von Schokolade hängt in der
+      Luft, der letzte Donut liegt bereit.
     exitText: >-
       Mit dem Donut sicher in der Hand drehst du dich noch einmal um und
-      siehst dich kurz nach den anderen um, die es nicht rechtzeitig
-      geschafft haben.
+      suchst die anderen im Gang.
 
 # Topologie entspricht dem bekannten Wikipedia-Beispielgraphen zu Dijkstras
-# Algorithmus (Knoten 1-6). Gewichte mit Faktor 50 skaliert und über das
-# optionale `weight`-Feld gesetzt (siehe README): der reine Textlängen-
-# Mechanismus kann diese Art von Graph strukturell nicht abbilden, da ein
-# Umweg über einen Zwischenknoten dort nie günstiger sein kann als eine
-# direkte Kante zwischen denselben zwei Knoten.
+# Algorithmus (Knoten 1-6). Zur Referenz die ungerichteten Original-Gewichte:
+#   1-2 (start-lehrer)            = 7
+#   1-3 (start-hausmeister)       = 9
+#   1-6 (start-keller)            = 14
+#   2-3 (lehrer-hausmeister)      = 10
+#   2-4 (lehrer-bibliothek)       = 15
+#   3-4 (hausmeister-bibliothek)  = 11
+#   3-6 (hausmeister-keller)      = 2
+#   4-5 (bibliothek-ziel)         = 6
+#   6-5 (keller-ziel)             = 9
+#
+# Das Gewicht ist wieder ganz regulär die Textlänge (kein `weight`-Override
+# mehr). Alle entryText/exitText liegen bei ca. 100 Zeichen; die relative
+# Größenordnung der Original-Gewichte wird stattdessen über das optionale
+# `extra`-Feld je Kante nachgebildet – ein kurzer Gang-/Umwegtext, der beim
+# Zusammensetzen zwischen exitText und entryText eingefügt wird. Das braucht
+# es hier zwingend: unter reiner Textlängen-Gewichtung (ohne `extra`) kann ein
+# Umweg über einen Zwischenknoten nie günstiger sein als eine direkte Kante
+# zwischen denselben zwei Knoten, weil der Umweg zusätzlich noch die (nicht
+# negative) Textlänge des Zwischenknotens selbst trägt. Das `extra`-Feld ist
+# pro Kante frei wählbar und unabhängig von den Knotentexten, daher lässt
+# sich damit trotzdem eine echte Dijkstra-Relaxation abbilden.
 edges:
   - from: start
     to: lehrer
-    weight: 350
+    extra: >-
+      Der Flur zum Lehrerzimmer ist an diesem Vormittag besonders voll:
+      Schultaschen stapeln sich vor den Spinden, jemand hat einen
+      Kaffeebecher fallen lassen, und du musst dich an mindestens drei
+      Grüppchen tuschelnder Fünftklässler vorbeidrängeln, bevor die Tür
+      überhaupt in Sicht kommt.
   - from: start
     to: hausmeister
-    weight: 450
+    extra: >-
+      Der Weg zur Hausmeisterloge führt an der Turnhalle vorbei, aus der
+      gerade eine Klasse mit Matten zurückströmt; du wartest kurz, wagst
+      einen Schlenker über den Seiteneingang und erreichst schließlich die
+      schwere Tür mit dem Schild „Hausmeisterei“.
   - from: start
     to: keller
-    weight: 700
+    extra: >-
+      Der direkte Weg zum Keller führt einmal quer durchs halbe
+      Schulgebäude: erst die Treppe am Haupteingang runter, dann durch den
+      langen, schlecht beleuchteten Verbindungsgang hinter der Aula, vorbei
+      an der Fahrradgarage, über den kleinen Hinterhof, an dem seit Wochen
+      ein kaputter Rasenmäher steht, durch eine quietschende Nebentür, die
+      eigentlich nie benutzt wird, vorbei an einer Gruppe Erstklässler, die
+      dort ausgerechnet jetzt ihr Klassenfoto aufstellen, und schließlich
+      über eine zweite, engere Treppe, die direkt zur Kellertür führt – ein
+      Umweg, der sich wirklich in die Länge zieht, wenn man es eilig hat.
   - from: lehrer
     to: hausmeister
-    weight: 500
+    extra: >-
+      Vom Lehrerzimmer aus nimmst du den kurzen Flur Richtung Verwaltung,
+      vorbei an der Anschlagtafel voller vergilbter Aushänge und einem
+      umgekippten Papierkorb, den offenbar noch niemand bemerkt hat; kurz
+      vor der Ecke musst du einem Rollcontainer ausweichen, den jemand
+      mitten in den Weg gestellt hat, bevor die Tür der Hausmeisterei
+      auftaucht.
   - from: lehrer
     to: bibliothek
-    weight: 750
+    extra: >-
+      Der Weg von Herrn Vogelsangs Zimmer zur Bibliothek ist der mit
+      Abstand längste im ganzen Gebäude: erst der komplette Ostflügel
+      entlang, vorbei an drei verschlossenen Fachräumen, dann über die
+      Galerie mit Blick auf die Aula, wo gerade jemand Stühle für die
+      nächste Veranstaltung stapelt, weiter durch den schmalen
+      Verbindungsgang zum Altbau, dessen Boden bei jedem Schritt leise
+      knarrt, an der Kunstsammlung mit den immer gleichen drei
+      ausgestellten Vasen vorbei, bis endlich, ganz am Ende des Flurs, die
+      schwere Holztür mit der Aufschrift „Bibliothek – bitte leise“
+      auftaucht.
   - from: hausmeister
     to: bibliothek
-    weight: 550
+    extra: >-
+      Von der Hausmeisterei aus geht es über den Hinterflur, vorbei am
+      Lager mit den Ersatzstühlen und einem Stapel alter Wandkarten, die
+      niemand mehr braucht, dann eine kurze Treppe hoch, an der Schulküche
+      vorbei, aus der es nach angebranntem Toast riecht, und schließlich
+      durch die unscheinbare Seitentür, die direkt in die Bibliothek führt,
+      vorbei am Aushang für die nächste Buchausstellung.
   - from: hausmeister
     to: keller
-    weight: 100
   - from: bibliothek
     to: ziel
-    weight: 300
+    extra: >-
+      Von der Bibliothek bis zur Cafeteria ist es nur ein kurzer Sprung
+      über den Verbindungsflur, an zwei Aushängen für den
+      Schulsanitätsdienst vorbei.
   - from: keller
     to: ziel
-    weight: 450
+    extra: >-
+      Vom Keller aus nimmst du die Nebentreppe direkt neben der
+      Heizungsanlage, vorbei an Stapeln leerer Getränkekisten und einem
+      alten Werkzeugschrank, dessen Tür seit Jahren klemmt, dann durch die
+      unscheinbare Tür mit dem Schild „Nur für Personal“, die
+      überraschenderweise direkt hinter der Cafeteria-Theke herauskommt.

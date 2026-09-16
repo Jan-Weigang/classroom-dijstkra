@@ -106,18 +106,16 @@ for index, edge in enumerate(GAME_DATA["edges"]):
     edge["id"] = f"e{index}"
     left = GAME_DATA["nodes"][edge["from"]]
     right = GAME_DATA["nodes"][edge["to"]]
-    forward_text = compose_text(left["exitText"], right["entryText"])
-    backward_text = compose_text(right["exitText"], left["entryText"])
-    weight = edge.get("weight")
-    if weight is not None and (not isinstance(weight, (int, float)) or weight <= 0):
-        raise ValueError(f"game_data.yaml: Kante {edge['id']} hat ein ungültiges weight")
-    edge["forward"] = {"text": forward_text, "w": weight if weight is not None else len(forward_text)}
-    edge["backward"] = {"text": backward_text, "w": weight if weight is not None else len(backward_text)}
+    extra = edge.get("extra", "")
+    forward_text = compose_text(left["exitText"], extra, right["entryText"])
+    backward_text = compose_text(right["exitText"], extra, left["entryText"])
+    edge["forward"] = {"text": forward_text, "w": len(forward_text)}
+    edge["backward"] = {"text": backward_text, "w": len(backward_text)}
 
 EDGES = {edge["id"]: edge for edge in GAME_DATA["edges"]}
 ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 PLAYER_TTL = 25
-TICK_SECONDS = float(os.getenv("GAME_TICK_SECONDS", "0.13"))
+TICK_SECONDS = float(os.getenv("GAME_TICK_SECONDS", "0.1"))
 BROADCAST_STEPS = max(1, int(os.getenv("GAME_BROADCAST_STEPS", "10")))
 GAME_DATA["playback"] = {
     "tickMilliseconds": round(TICK_SECONDS * 1000),
