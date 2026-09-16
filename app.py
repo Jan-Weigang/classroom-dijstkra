@@ -47,7 +47,7 @@ def spring_layout(node_ids, edges, width=760, height=480, iterations=400, seed=7
         adjacency[right].append(left)
 
     rng = random.Random(seed)
-    margin = 60
+    margin = 100
     k = math.sqrt((width * height) / max(len(node_ids), 1))
     pos = {
         node: [rng.uniform(margin, width - margin), rng.uniform(margin, height - margin)]
@@ -106,18 +106,16 @@ for index, edge in enumerate(GAME_DATA["edges"]):
     edge["id"] = f"e{index}"
     left = GAME_DATA["nodes"][edge["from"]]
     right = GAME_DATA["nodes"][edge["to"]]
-    forward_text = compose_text(left["exitText"], right["entryText"])
-    backward_text = compose_text(right["exitText"], left["entryText"])
-    weight = edge.get("weight")
-    if weight is not None and (not isinstance(weight, (int, float)) or weight <= 0):
-        raise ValueError(f"game_data.yaml: Kante {edge['id']} hat ein ungültiges weight")
-    edge["forward"] = {"text": forward_text, "w": weight if weight is not None else len(forward_text)}
-    edge["backward"] = {"text": backward_text, "w": weight if weight is not None else len(backward_text)}
+    extra = edge.get("extra", "")
+    forward_text = compose_text(left["exitText"], extra, right["entryText"])
+    backward_text = compose_text(right["exitText"], extra, left["entryText"])
+    edge["forward"] = {"text": forward_text, "w": len(forward_text)}
+    edge["backward"] = {"text": backward_text, "w": len(backward_text)}
 
 EDGES = {edge["id"]: edge for edge in GAME_DATA["edges"]}
 ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 PLAYER_TTL = 25
-TICK_SECONDS = float(os.getenv("GAME_TICK_SECONDS", "0.13"))
+TICK_SECONDS = float(os.getenv("GAME_TICK_SECONDS", "0.1"))
 BROADCAST_STEPS = max(1, int(os.getenv("GAME_BROADCAST_STEPS", "10")))
 GAME_DATA["playback"] = {
     "tickMilliseconds": round(TICK_SECONDS * 1000),
@@ -179,6 +177,7 @@ class GameRoom:
             "textDirection": None,
             "textProgress": 0,
             "path": [],
+            "known": {START_NODE: {"dist": 0, "prev": None, "by": None}},
             "last_seq": 0,
             "last_seen": time.monotonic(),
         }
@@ -197,7 +196,7 @@ class GameRoom:
             player["status"] in ("ready", "traversing") for player in active
         )
 
-    def snapshot(self):
+    def snapshot(self, pid=None):
         public_keys = (
             "name",
             "node",
@@ -211,8 +210,18 @@ class GameRoom:
             "textProgress",
             "path",
         )
+        viewer = self.players.get(pid) if pid else None
+        if viewer is None or viewer["status"] in ("stopped", "finished"):
+            board = self.board
+            highlight_nodes = self.highlight_nodes
+        else:
+            board = {
+                node: viewer["known"].get(node, {"dist": None, "prev": None, "by": None})
+                for node in NODES
+            }
+            highlight_nodes = self.highlight_nodes & viewer["known"].keys()
         return {
-            "board": self.board,
+            "board": board,
             "players": {
                 pid: {key: player[key] for key in public_keys}
                 for pid, player in self.players.items()
@@ -221,7 +230,7 @@ class GameRoom:
             "canPlay": self.can_play(),
             "step": self.step,
             "pausedAtStep": self.paused_at_step,
-            "highlightNodes": sorted(self.highlight_nodes),
+            "highlightNodes": sorted(highlight_nodes),
         }
 
     def choose(self, player, edge_id):
@@ -331,6 +340,11 @@ class GameRoom:
             )
             if item["cost"] <= final_best:
                 player["status"] = "finished" if node == GOAL_NODE else "waiting"
+                player["known"][node] = {
+                    "dist": item["cost"],
+                    "prev": item["origin"],
+                    "by": player["name"],
+                }
             else:
                 player["status"] = "stopped"
                 rejected_nodes.add(node)
@@ -417,12 +431,12 @@ def create_app(start_ticker=True) -> Flask:
             room = room_or_404(code)
             pid = room.join(data.get("name"))
             condition.notify_all()
-            return jsonify(pid=pid, state=room.snapshot())
+            return jsonify(pid=pid, state=room.snapshot(pid))
 
     @app.get("/api/rooms/<code>/state")
     def get_state(code):
         with condition:
-            return jsonify(room_or_404(code).snapshot())
+            return jsonify(room_or_404(code).snapshot(request.args.get("pid")))
 
     @app.get("/api/rooms/<code>/events")
     def room_events(code):
@@ -449,7 +463,7 @@ def create_app(start_ticker=True) -> Flask:
                         if room.version != last_version:
                             last_version = room.version
                             payload = json.dumps(
-                                room.snapshot(), ensure_ascii=False, separators=(",", ":")
+                                room.snapshot(pid), ensure_ascii=False, separators=(",", ":")
                             )
                             chunk = f"event: state\ndata: {payload}\n\n"
                         else:
@@ -471,7 +485,7 @@ def create_app(start_ticker=True) -> Flask:
             room = room_or_404(code)
             if room.action(data.get("pid"), data):
                 condition.notify_all()
-            return jsonify(room.snapshot())
+            return jsonify(room.snapshot(data.get("pid")))
 
     @app.post("/api/rooms/<code>/play")
     def play(code):
@@ -483,7 +497,7 @@ def create_app(start_ticker=True) -> Flask:
             room.players[data["pid"]]["last_seen"] = time.monotonic()
             room.play()
             condition.notify_all()
-            return jsonify(room.snapshot())
+            return jsonify(room.snapshot(data.get("pid")))
 
     return app
 
