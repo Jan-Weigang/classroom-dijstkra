@@ -3,17 +3,18 @@ nodes:
     start: true
     name: Der Startschuss
     short: Start
-    blurb: Es klingelt gleich. Drei Wege liegen vor dir.
+    blurb: Es klingelt gleich. Drei Routen liegen vor dir.
     intro: >-
       Noch wenige Minuten bis zur großen Pause. Im hintersten Winkel der
-      Schulküche wartet der allerletzte Schoko-Donut. Finde den kürzesten Weg
-      zur Theke – bevor es klingelt.
+      Schulküche wartet der allerletzte Schoko-Donut, und du bist nicht der
+      Einzige, der davon gehört hat. Plane deine Route, beweg dich leise,
+      und sei zuerst an der Theke – bevor es klingelt.
     entryText: >-
-      Du bist wieder am Ausgangspunkt. Der Flur füllt sich mit dem Lärm der
-      großen Pause, die Uhr tickt.
+      Du bist zurück am Ausgangspunkt. Die Cafeteria-Uhr tickt wie ein
+      Countdown, die Pausenglocke lauert.
     exitText: >-
-      Du wirfst einen letzten Blick auf die drei offenen Türen und
-      entscheidest dich sofort für einen Weg.
+      Du scannst die drei möglichen Routen wie einen Fluchtplan, wählst
+      blitzschnell und legst los.
 
   sporthalle:
     name: Die Sporthalle
@@ -63,10 +64,11 @@ nodes:
     goal: true
     name: Die Theke – der letzte Donut
     short: Theke
-    blurb: Warm, schokoladig, greifbar nah.
+    blurb: Ein Spotlight, ein Donut – die Frage ist nur, wessen Hand ihn schon hält.
     entryText: >-
-      Du erreichst die Cafeteria-Theke. Der Duft von Schokolade hängt in der
-      Luft, der letzte Donut liegt bereit.
+      Du kommst um die letzte Ecke: ein Lichtkegel fällt auf die Theke,
+      genau auf den letzten Donut – und auf eine Hand, die schon danach
+      greift.
     exitText: >-
       Mit dem Donut sicher in der Hand drehst du dich noch einmal um und
       suchst die anderen im Gang.
@@ -139,20 +141,24 @@ edges:
       vorbei am Aushang für die nächste Buchausstellung.
   - from: sporthalle
     to: nw_trakt
+    extra: >-
+      Du duckst dich unter dem letzten Ball weg, stolperst durch die
+      Seitentür – und stehst plötzlich mitten im NW-Trakt.
   - from: bibliothek
     to: ziel
     extra: >-
-      Von der Bibliothek bis zur Cafeteria ist es nur ein kurzer Sprung
-      über den Verbindungsflur, an zwei Aushängen für den
-      Schulsanitätsdienst vorbei.
+      Du kletterst kurzerhand aus dem Bibliotheksfenster, landest im Beet
+      und stürmst durch die Hintertür in die Küche, wo die zwergenhaften
+      Küchenkräfte entsetzt aufkreischen.
   - from: nw_trakt
     to: ziel
     extra: >-
-      Vom Keller aus nimmst du die Nebentreppe direkt neben der
-      Heizungsanlage, vorbei an Stapeln leerer Getränkekisten und einem
-      alten Werkzeugschrank, dessen Tür seit Jahren klemmt, dann durch die
-      unscheinbare Tür mit dem Schild „Nur für Personal“, die
-      überraschenderweise direkt hinter der Cafeteria-Theke herauskommt.
+      Herr Dr. Kessler, hochmotivierter Physiklehrer, hat aus dem Fenster
+      des NW-Trakts eine improvisierte Seilbahn gespannt – „ideal für den
+      Fallversuch!“ – und schnallt dich, bevor du protestieren kannst, in
+      einen selbstgenähten Fallschirm, der sich erst zwei Meter über dem
+      Boden mit einem lauten Rucken öffnet, mit dem du reichlich unsanft
+      direkt vor der Cafeteria landest.
   - from: pausenhalle
     to: nw_trakt
     extra: >-
@@ -166,5 +172,5 @@ edges:
   - from: bibliothek
     to: nw_trakt
     extra: >-
-      Von der Bibliothek führt eine schmale Wendeltreppe direkt hinunter
-      zum Keller, vorbei an einem Stapel eingemotteter alter Atlanten.
+      Die Bibliothekarin packt dich am Kragen und wirft dich kurzerhand
+      aus der Seitentür – und du stehst plötzlich mitten im NW-Trakt.
