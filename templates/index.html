@@ -86,15 +86,11 @@
   .edgemeter.hidden{visibility:hidden}
   .choices{margin-top:18px;display:grid;gap:9px}
   .choices .hint{font-size:.82rem;color:var(--pink-deep);font-weight:700}
-  .choice{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:5px 14px;text-align:left;
+  .choice{display:block;width:100%;text-align:left;
     background:#f6efdd;border:1px solid var(--paper-line);color:var(--paper-ink);border-radius:10px;padding:11px 14px}
   .choice:hover{border-color:var(--brass-deep)}
   .choice:disabled{opacity:.5;cursor:not-allowed}
   .choice .to{font-family:var(--font-story);font-size:1.02rem;font-weight:600}
-  .choice .w{font-family:var(--font-num);font-size:.98rem;color:var(--brass-deep);text-align:right;align-self:center}
-  .choice .w small{display:block;font-size:.58rem;color:var(--paper-soft);font-family:var(--font-ui)}
-  .choice .bar{grid-column:1/-1;height:6px;background:rgba(0,0,0,.08);border-radius:99px;overflow:hidden}
-  .choice .bar i{display:block;height:100%;background:var(--brass)}
   .waitmsg{margin-top:14px;color:var(--paper-soft);font-style:italic;font-family:var(--font-story)}
 
   .tools{display:grid;gap:16px}
@@ -149,8 +145,7 @@
       <span class="pill" id="s_conn"><span class="led"></span><span id="s_connText">verbinde …</span></span>
       <span class="pill">Raum <b id="s_room" class="roomtag" style="font-size:.95rem">—</b></span>
       <span class="pill"><b id="s_students">0</b>&nbsp;verbunden</span>
-      <span class="pill">Schritt&nbsp;<b id="s_step">0</b></span>
-      <div class="cost"><b id="s_cost">0</b><span>deine&nbsp;Kosten</span></div>
+      <div class="cost"><b id="s_cost">0</b><span>deine&nbsp;Zeit&nbsp;(s)</span></div>
       <button class="playBtn" id="s_play" disabled>▶ Play</button>
     </div>
   </header>
@@ -181,7 +176,7 @@
       </section>
       <section class="card">
         <h2>Gemeinsame Tabelle</h2><p class="sub" style="color:var(--muted)">Füllt sich automatisch für alle, sobald jemand kürzer ankommt.</p>
-        <table class="sheet"><thead><tr><th>Knoten</th><th>Distanz</th><th>Vorgänger</th><th>Eingetragen von</th></tr></thead><tbody id="s_sheet"></tbody></table>
+        <table class="sheet"><thead><tr><th>Knoten</th><th>Zeit (s)</th><th>Vorgänger</th><th>Eingetragen von</th></tr></thead><tbody id="s_sheet"></tbody></table>
       </section>
     </div>
   </div>
@@ -196,7 +191,6 @@ let GRAPH=null,U=null,gamePromise=null;
 function buildGraphUtil(graph){
   const edges=graph.edges;
   const edgeById={};
-  const maxW=Math.max(...edges.flatMap(edge=>[edge.forward.w,edge.backward.w]));
   const incidentByNode={};
   graph.order.forEach(node=>incidentByNode[node]=[]);
   edges.forEach(edge=>{
@@ -204,7 +198,7 @@ function buildGraphUtil(graph){
     incidentByNode[edge.from].push({e:edge,to:edge.to,direction:"forward"});
     incidentByNode[edge.to].push({e:edge,to:edge.from,direction:"backward"});
   });
-  return {edges,edgeById,maxW,incident:node=>incidentByNode[node]||[]};
+  return {edges,edgeById,incident:node=>incidentByNode[node]||[]};
 }
 async function loadGame(){
   if(!gamePromise){
@@ -247,6 +241,8 @@ function el(tag,attrs,parent){
    RAUMSTART
    =================================================================== */
 const $=(id)=>document.getElementById(id);
+const SECONDS_PER_UNIT=0.03;
+function formatSeconds(units){return (units*SECONDS_PER_UNIT).toFixed(2);}
 function showStudent(){$("start").classList.add("hidden");$("studentApp").classList.remove("hidden");}
 function setStartStatus(msg,cls){$("startMsg").textContent=msg;const l=$("startLed");l.className="led"+(cls?" "+cls:"");}
 function playerName(){
@@ -295,7 +291,7 @@ async function startStudent(room,name){
       method:"POST",body:JSON.stringify({name})
     });
     const pid=joined.pid;
-    let seq=1,latest=joined.state,viewSig="";
+    let seq=1,latest=joined.state,viewSig="",terminalNoticedAt=null;
     const storyAnimation={key:"",shown:0,target:0,text:"",total:0,baseCost:0,typing:false,lastTime:0,frame:0};
     const events=new EventSource("/api/rooms/"+encodeURIComponent(room)+"/events?pid="+encodeURIComponent(pid));
 
@@ -350,7 +346,7 @@ async function startStudent(room,name){
       $("s_tot").textContent=storyAnimation.total;
       $("s_now").textContent=shown;
       $("s_fill").style.width=(100*shown/storyAnimation.total)+"%";
-      $("s_cost").textContent=storyAnimation.baseCost+shown;
+      $("s_cost").textContent=formatSeconds(storyAnimation.baseCost+shown);
     }
 
     function advanceStory(now){
@@ -371,7 +367,6 @@ async function startStudent(room,name){
     }
 
     function renderProgress(me,state){
-      $("s_step").textContent=state.step;
       const edge=me&&me.textEdgeId?U.edgeById[me.textEdgeId]:null;
       const traversal=edge&&me.textDirection?edge[me.textDirection]:null;
       if(!traversal){
@@ -380,7 +375,7 @@ async function startStudent(room,name){
         $("s_passage").textContent=GRAPH.intro;
         $("s_passage").classList.remove("typing");
         $("s_meter").classList.add("hidden");
-        $("s_cost").textContent=me?me.cost:0;
+        $("s_cost").textContent=formatSeconds(me?me.cost:0);
         return;
       }
       const key=me.textEdgeId+":"+me.textDirection;
@@ -415,13 +410,20 @@ async function startStudent(room,name){
         return;
       }
 
-      $("s_grid").classList.toggle("wait-mode",state.phase==="choosing"&&me.status!=="waiting");
+      const isTerminal=me.status==="stopped"||me.status==="finished";
+      if(isTerminal){
+        if(terminalNoticedAt===null)terminalNoticedAt=state.pausedAtStep;
+      }else{
+        terminalNoticedAt=null;
+      }
+      const inGracePeriod=isTerminal&&state.pausedAtStep===terminalNoticedAt;
+      $("s_grid").classList.toggle("wait-mode",state.phase==="choosing"&&me.status!=="waiting"&&!inGracePeriod);
 
       const paused=state.phase==="choosing";
       $("s_pauseBanner").classList.toggle("show",paused&&me.status!=="stopped"&&me.status!=="finished");
       if(paused){
         if(me.status==="traversing"){
-          $("s_pauseBanner").textContent="Pause bei Schritt "+state.pausedAtStep+": Ein Weg ist angekommen. Dein Text läuft beim nächsten Play exakt hier weiter.";
+          $("s_pauseBanner").textContent="Pause: Ein Weg ist angekommen. Dein Text läuft beim nächsten Play exakt hier weiter.";
         }else if(state.canPlay){
           $("s_pauseBanner").textContent="Alle sind bereit – jetzt kann jemand Play drücken.";
         }else{
@@ -455,7 +457,7 @@ async function startStudent(room,name){
         $("s_passage").classList.remove("typing");
         $("s_stopBanner").classList.remove("show");
         $("s_winBanner").classList.add("show");
-        $("s_winBanner").textContent="Donut erreicht – dein Weg kostet "+me.cost+" Punkte.";
+        $("s_winBanner").textContent="Donut erreicht – dein Weg dauerte "+formatSeconds(me.cost)+" Sekunden.";
         $("s_nodeName").textContent=GRAPH.nodes[GRAPH.goalNode].name;
         $("s_blurb").textContent=GRAPH.nodes[GRAPH.goalNode].blurb;
         $("s_statusText").textContent="Geschafft.";
@@ -469,12 +471,11 @@ async function startStudent(room,name){
       $("s_blurb").textContent=node.blurb||"";
       $("s_statusText").textContent=me.node===GRAPH.startNode?"Wähle deinen ersten Weg.":"Du bist angekommen. Wohin als Nächstes?";
       const box=$("s_choices");
-      box.innerHTML='<div class="hint">Wähle deinen nächsten Weg (Zahl = Kosten):</div>';
-      U.incident(me.node).forEach(({e,to,direction})=>{
-        const weight=e[direction].w;
+      box.innerHTML='<div class="hint">Wähle deinen nächsten Weg:</div>';
+      U.incident(me.node).forEach(({e,to})=>{
         const button=document.createElement("button");
         button.className="choice";
-        button.innerHTML='<span class="to">'+GRAPH.nodes[to].name+'</span><span class="w">'+weight+'<small>Kosten</small></span><span class="bar"><i style="width:'+(100*weight/U.maxW)+'%"></i></span>';
+        button.innerHTML='<span class="to">'+GRAPH.nodes[to].name+'</span>';
         button.onclick=()=>sendAction({t:"choose",edgeId:e.id});
         box.appendChild(button);
       });
@@ -487,7 +488,7 @@ async function startStudent(room,name){
       $("s_blurb").textContent=GRAPH.nodes[me.node].blurb||"";
       $("s_statusText").textContent="";
       $("s_stopBanner").classList.add("show");
-      $("s_stopBanner").textContent="Im Gang vor dir ist "+bestName+" bereits unterwegs. Zu spät – der Donut ist weg. Dein Weg kostete "+me.cost+" Punkte; in der Tabelle steht bereits "+best+".";
+      $("s_stopBanner").textContent="Im Gang vor dir ist "+bestName+" bereits unterwegs. Zu spät – der Donut ist weg. Dein Weg dauerte "+formatSeconds(me.cost)+" Sekunden; in der Tabelle steht bereits "+formatSeconds(best)+".";
       $("s_winBanner").classList.remove("show");
       $("s_choices").innerHTML="";
     }
@@ -507,7 +508,7 @@ function buildStudentSheet(){
 }
 function renderSheet(board,signaledNodes){
   GRAPH.order.forEach(id=>{ const tr=$("s_sheet").querySelector('tr[data-node="'+id+'"]'); if(!tr)return;
-    const b=board[id],next=b.dist===null?"∞":String(b.dist);
+    const b=board[id],next=b.dist===null?"∞":formatSeconds(b.dist);
     tr.querySelector(".dist").textContent=next;
     tr.querySelector(".prev").textContent=b.prev?GRAPH.nodes[b.prev].name:(id===GRAPH.startNode?"Start":"–");
     tr.querySelector(".owner").textContent=b.by||"–";
