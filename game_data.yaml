@@ -105,9 +105,9 @@ nodes:
 # pro Kante frei wählbar und unabhängig von den Knotentexten, daher lässt
 # sich damit trotzdem eine echte Dijkstra-Relaxation abbilden.
 #
-# `pausenhalle` ist ein zusätzlicher Knotenpunkt (an ziel, bibliothek,
-# hausmeister und keller angebunden) mit bewusst kurzen Texten. Weil Kosten
-# in diesem Spiel exakt der Simulationszeit entsprechen, kommt eine
+# `pausenhalle` ist ein zusätzlicher Knotenpunkt (an keller und ziel
+# angebunden) mit bewusst kurzen Texten. Weil Kosten in diesem Spiel exakt
+# der Simulationszeit entsprechen, kommt eine
 # Tabellen-Aktualisierung (ein bereits eingetragener Wert wird durch einen
 # besseren ersetzt) hier nie vor - wer zuerst ankommt, hat zwangsläufig den
 # günstigsten bekannten Weg genommen. Die eigentliche Dijkstra-Pointe
@@ -200,21 +200,3 @@ edges:
     extra: >-
       Die Cafeteria-Theke ist nur einen Sprung von der Pausenhalle
       entfernt.
-  - from: pausenhalle
-    to: hausmeister
-    extra: >-
-      Der Weg von der Pausenhalle zur Hausmeisterei führt einmal komplett
-      um den Innenhof herum, vorbei an der Fahrradgarage und dem Lager für
-      die Sportgeräte, die gerade jemand mühsam zurück in den Schuppen
-      räumt, und weiter über den kleinen Umweg durch die verlassene alte
-      Turnhalle, in der seit Jahren nur noch kaputte Matten und ein
-      einsamer Kasten stehen, bevor die vertraute Tür mit dem Schild
-      „Hausmeisterei“ endlich auftaucht.
-  - from: pausenhalle
-    to: bibliothek
-    extra: >-
-      Von der Pausenhalle zur Bibliothek geht es über die Galerie mit
-      Blick auf die Aula, vorbei an der Anschlagtafel mit den
-      Vertretungsplänen, die heute wieder komplett überklebt ist, bis die
-      schwere Holztür mit der Aufschrift „Bibliothek – bitte leise“
-      auftaucht.

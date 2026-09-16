@@ -211,6 +211,7 @@ class GameRoom:
             "path",
         )
         viewer = self.players.get(pid) if pid else None
+        visited = sorted(viewer["known"]) if viewer is not None else list(NODES)
         if viewer is None or viewer["status"] in ("stopped", "finished"):
             board = self.board
             highlight_nodes = self.highlight_nodes
@@ -222,6 +223,7 @@ class GameRoom:
             highlight_nodes = self.highlight_nodes & viewer["known"].keys()
         return {
             "board": board,
+            "visited": visited,
             "players": {
                 pid: {key: player[key] for key in public_keys}
                 for pid, player in self.players.items()
@@ -338,13 +340,13 @@ class GameRoom:
                 direction=None,
                 progress=0,
             )
+            player["known"][node] = {
+                "dist": item["cost"],
+                "prev": item["origin"],
+                "by": player["name"],
+            }
             if item["cost"] <= final_best:
                 player["status"] = "finished" if node == GOAL_NODE else "waiting"
-                player["known"][node] = {
-                    "dist": item["cost"],
-                    "prev": item["origin"],
-                    "by": player["name"],
-                }
             else:
                 player["status"] = "stopped"
                 rejected_nodes.add(node)
