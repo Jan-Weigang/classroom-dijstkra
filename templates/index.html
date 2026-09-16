@@ -111,6 +111,7 @@
   .route-node-label.here{fill:#20180a;font-weight:700}
   .route-node-name{font-family:var(--font-ui);font-size:15px;font-weight:600;fill:var(--paper);text-anchor:middle;pointer-events:none}
   .player-dot{fill:var(--pink);stroke:#fff;stroke-width:1.5px}
+  .player-trail{stroke:var(--pink);stroke-width:5;stroke-linecap:round;opacity:.5}
   table.sheet{width:100%;border-collapse:collapse;font-size:.85rem}
   table.sheet th,table.sheet td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left}
   table.sheet th{color:var(--muted);font-weight:500;font-size:.72rem}
@@ -181,7 +182,7 @@
       <section class="card">
         <h2>Dein Weg</h2><p class="sub" style="color:var(--muted)">Gold = gegangen, Pink = aktuell unterwegs.</p>
         <div class="mapwrap"><svg class="map" id="s_map" role="img" aria-label="Graph">
-          <g id="s_edges"></g><g id="s_nodes"></g><g id="s_dots"></g></svg></div>
+          <g id="s_edges"></g><g id="s_nodes"></g><g id="s_trails"></g><g id="s_dots"></g></svg></div>
       </section>
       <section class="card">
         <h2>Gemeinsame Tabelle</h2><p class="sub" style="color:var(--muted)">Füllt sich automatisch für alle, sobald jemand kürzer ankommt.</p>
@@ -301,6 +302,9 @@ async function startStudent(room,name){
     });
     const pid=joined.pid;
     let seq=1,latest=joined.state,viewSig="",terminalNoticedAt=null,resultsMode=false,gameOver=false;
+    let previousTraversingPids=new Set();
+    const lastTraversalByPid=new Map();
+    const frozenTrails=[];
     const storyAnimation={key:"",shown:0,target:0,text:"",total:0,baseCost:0,typing:false,lastTime:0,frame:0};
     const events=new EventSource("/api/rooms/"+encodeURIComponent(room)+"/events?pid="+encodeURIComponent(pid));
 
@@ -418,20 +422,63 @@ async function startStudent(room,name){
       }
     }
 
+    function edgeFrac(edge,direction,progress){
+      const traversal=edge&&direction?edge[direction]:null;
+      if(!traversal||traversal.w<=0)return 0;
+      return Math.min(1,progress/traversal.w);
+    }
+    function trailSegmentFor(edge,direction,frac){
+      const fromId=direction==="forward"?edge.from:edge.to;
+      const toId=direction==="forward"?edge.to:edge.from;
+      const from=GRAPH.nodes[fromId],to=GRAPH.nodes[toId];
+      return {x1:from.x,y1:from.y,x2:from.x+(to.x-from.x)*frac,y2:from.y+(to.y-from.y)*frac};
+    }
+
     function applyState(state){
       const me=state.players[pid];
       const players=Object.values(state.players);
       gameOver=players.length>0&&players.every(p=>p.status==="stopped"||p.status==="finished");
+      const iAmStopped=!!me&&me.status==="stopped";
+      const showResults=(gameOver&&resultsMode)||iAmStopped;
       $("s_students").textContent=players.length;
       $("s_play").disabled=gameOver?false:!state.canPlay;
       $("s_play").textContent=gameOver?"Ergebnisse":"▶ Play";
-      $("s_grid").classList.toggle("results-mode",gameOver&&resultsMode);
+      $("s_grid").classList.toggle("results-mode",showResults);
       renderSheet(state.board,new Set(state.highlightNodes||[]));
       const iAmActive=me&&me.status==="traversing";
-      const dotPlayers=Object.entries(state.players)
-        .filter(([otherPid,p])=>p.status==="traversing"&&(iAmActive?otherPid===pid:true))
-        .map(([,p])=>p);
-      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId,state.board,new Set(state.visited||[]),dotPlayers);
+      const dotEntries=Object.entries(state.players)
+        .filter(([otherPid,p])=>p.status==="traversing"&&(iAmActive?otherPid===pid:true));
+
+      // Freeze the last known edge/direction of anyone who just stopped traversing (their
+      // edgeId/direction are already nulled out server-side by the time we'd see it here),
+      // so their trail can keep being drawn ("stick") once we're spectating in results view.
+      const nowTraversingPids=new Set(
+        Object.entries(state.players).filter(([,p])=>p.status==="traversing").map(([opid])=>opid)
+      );
+      previousTraversingPids.forEach(opid=>{
+        if(opid===pid||nowTraversingPids.has(opid))return;
+        const remembered=lastTraversalByPid.get(opid);
+        if(remembered)frozenTrails.push(remembered);
+      });
+      nowTraversingPids.forEach(opid=>{
+        const p=state.players[opid];
+        lastTraversalByPid.set(opid,{edgeId:p.edgeId,direction:p.direction});
+      });
+      previousTraversingPids=nowTraversingPids;
+
+      const liveSegments=dotEntries.map(([,p])=>{
+        const edge=U.edgeById[p.edgeId];
+        if(!edge||!edge[p.direction])return null;
+        return trailSegmentFor(edge,p.direction,edgeFrac(edge,p.direction,p.progress));
+      }).filter(Boolean);
+      const stuckSegments=showResults?frozenTrails.map(info=>{
+        const edge=U.edgeById[info.edgeId];
+        if(!edge||!edge[info.direction])return null;
+        return trailSegmentFor(edge,info.direction,1);
+      }).filter(Boolean):[];
+      const trailSegments=[...stuckSegments,...liveSegments];
+      const dotPlayers=dotEntries.map(([,p])=>p);
+      renderStudentMap(me&&me.node,me?me.path:[],me&&me.edgeId,state.board,new Set(state.visited||[]),dotPlayers,trailSegments);
 
       const isTerminal=!!me&&(me.status==="stopped"||me.status==="finished");
       if(isTerminal){
@@ -440,17 +487,17 @@ async function startStudent(room,name){
         terminalNoticedAt=null;
       }
       const inGracePeriod=isTerminal&&state.phase==="choosing"&&state.pausedAtStep===terminalNoticedAt;
-      const shouldDimStory=!resultsMode&&isTerminal&&!inGracePeriod;
+      const shouldDimStory=!showResults&&isTerminal&&!inGracePeriod;
       renderProgress(me,state,shouldDimStory);
 
       if(!me){
         $("s_passage").classList.remove("typing");
         connectionStatus("s","Sitzung abgelaufen – Seite neu laden",false);
-        $("s_grid").classList.toggle("wait-mode",!resultsMode);
+        $("s_grid").classList.toggle("wait-mode",!showResults);
         return;
       }
 
-      const shouldGreyAll=!resultsMode&&!isTerminal&&state.phase==="choosing"&&me.status!=="waiting";
+      const shouldGreyAll=!showResults&&!isTerminal&&state.phase==="choosing"&&me.status!=="waiting";
       $("s_grid").classList.toggle("story-dim",shouldDimStory);
       $("s_grid").classList.toggle("wait-mode",shouldGreyAll);
 
@@ -550,8 +597,9 @@ function renderSheet(board,signaledNodes){
     tr.classList.toggle("highlight",signaledNodes.has(id));
   });
 }
-function renderStudentMap(here,path,currentEdge,board,visitedSet,dotPlayers){
-  const eL=$("s_edges"),nL=$("s_nodes"),dL=$("s_dots"); eL.innerHTML="";nL.innerHTML="";dL.innerHTML="";
+function renderStudentMap(here,path,currentEdge,board,visitedSet,dotPlayers,trailSegments){
+  const eL=$("s_edges"),nL=$("s_nodes"),tL=$("s_trails"),dL=$("s_dots");
+  eL.innerHTML="";nL.innerHTML="";tL.innerHTML="";dL.innerHTML="";
   const taken=new Set(path||[]),R=52;
   U.edges.forEach(e=>{ const a=GRAPH.nodes[e.from],b=GRAPH.nodes[e.to];
     const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),ux=dx/d,uy=dy/d;
@@ -568,6 +616,9 @@ function renderStudentMap(here,path,currentEdge,board,visitedSet,dotPlayers){
     label.textContent=visited?formatSeconds(dist):"∞";
     const nameLabel=el("text",{x:n.x,y:n.y+R+18,class:"route-node-name"},nL);
     nameLabel.textContent=(visitedSet&&visitedSet.has(id))?(n.short||n.name):"?";
+  });
+  (trailSegments||[]).forEach(seg=>{
+    el("line",{x1:seg.x1,y1:seg.y1,x2:seg.x2,y2:seg.y2,class:"player-trail"},tL);
   });
   (dotPlayers||[]).forEach(p=>{
     const edge=U.edgeById[p.edgeId];
