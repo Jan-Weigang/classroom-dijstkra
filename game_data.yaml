@@ -20,22 +20,22 @@ nodes:
     short: Hausm.
     blurb: Strenge Autorität – und überraschend hilfsbereit.
     entryText: >-
-      Du erreichst Hausmeister Brzenska. Kurzer Blick, kurzes Nicken, sein
-      Schlüsselbund klappert laut.
+      Du erreichst Hausmeister Brzenska. Er verlangt wortlos deinen
+      Schülerausweis und stempelt ihn dreimal.
     exitText: >-
-      Er zeigt wortlos auf die nächste Tür und wendet sich wieder seinem
-      dampfenden Kaffeebecher zu.
+      Er reicht dir den Ausweis zurück, salutiert knapp und deutet auf die
+      nächste Kontrollstelle.
 
   bibliothek:
     name: Die Bibliothek
     short: Biblio.
     blurb: Angeblich der leiseste Ort der Schule. Angeblich.
     entryText: >-
-      Du schlüpfst durch die schwere Bibliothekstür. Zwischen den Regalen
-      riecht es nach altem Papier.
+      Die Bibliothekarin bewegt sich lautlos wie eine Spezialeinheit
+      zwischen den Regalen, Zwille im Anschlag.
     exitText: >-
-      Du legst das ungelesene Buch zurück ins Regal und schleichst so leise
-      wie möglich zur nächsten Tür.
+      Ein Klick, ein Zwirbeln – ein Haargummi schnalzt dir haarscharf am
+      Ohr vorbei, dann bist du durch die Tür.
 
   keller:
     name: Die Kellertreppe
@@ -53,10 +53,11 @@ nodes:
     short: Halle
     blurb: Der Knotenpunkt der Schule. Hier laufen alle Wege zusammen.
     entryText: >-
-      Du stehst mitten in der belebten Pausenhalle, umgeben von
-      Stimmengewirr.
+      Am Wasserspender blockiert eine Traube Drittklässler das
+      Rätsel-Schloss.
     exitText: >-
-      Du schlängelst dich durch die Menge und bist schon wieder unterwegs.
+      Du flüsterst die Lösung, drückst für sie den Knopf und schlüpfst
+      weiter.
 
   ziel:
     goal: true
@@ -104,22 +105,24 @@ edges:
   - from: start
     to: hausmeister
     extra: >-
-      Der Weg zur Hausmeisterloge führt an der Turnhalle vorbei, aus der
-      gerade eine Klasse mit Matten zurückströmt; du wartest kurz, wagst
-      einen Schlenker über den Seiteneingang und erreichst schließlich die
-      schwere Tür mit dem Schild „Hausmeisterei“.
+      Der Weg zur Hausmeisterloge führt mitten durch die Turnhalle, wo
+      gerade ein Völkerballspiel tobt; du duckst dich unter zwei Bällen
+      weg, springst über einen dritten und erreichst, leicht außer Atem,
+      die schwere Tür mit dem Schild „Hausmeisterei“.
   - from: start
     to: keller
     extra: >-
-      Der direkte Weg zum Keller führt einmal quer durchs halbe
-      Schulgebäude: erst die Treppe am Haupteingang runter, dann durch den
-      langen, schlecht beleuchteten Verbindungsgang hinter der Aula, vorbei
-      an der Fahrradgarage, über den kleinen Hinterhof, an dem seit Wochen
-      ein kaputter Rasenmäher steht, durch eine quietschende Nebentür, die
-      eigentlich nie benutzt wird, vorbei an einer Gruppe Erstklässler, die
-      dort ausgerechnet jetzt ihr Klassenfoto aufstellen, und schließlich
-      über eine zweite, engere Treppe, die direkt zur Kellertür führt – ein
-      Umweg, der sich wirklich in die Länge zieht, wenn man es eilig hat.
+      Der direkte Weg zum Keller führt über eine improvisierte
+      Hürdenstrecke aus Schulranzen, die eine ganze Klasse mitten im Flur
+      liegen gelassen hat; beim Sprung über den letzten Ranzen verlierst
+      du das Gleichgewicht und schlägst dir hart das Knie auf. Der
+      Schulsanitätsdienst ist sofort zur Stelle – zwei Fünftklässler mit
+      Verbandskasten und grimmiger Entschlossenheit –, doch bevor sie auch
+      nur ein Pflaster auspacken dürfen, muss erst ein dreiseitiges
+      Unfallprotokoll ausgefüllt werden, mit Durchschlag, Unterschrift der
+      Klassenleitung und einer Skizze des Tathergangs, die keiner von euch
+      dreien wirklich hinbekommt, während die Minuten bis zum Pausenende
+      ungerührt weiterlaufen.
   - from: hausmeister
     to: bibliothek
     extra: >-
