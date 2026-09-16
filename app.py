@@ -1,9 +1,10 @@
 import json
+import math
 import os
+import random
 import secrets
 import threading
 import time
-from collections import deque
 from copy import deepcopy
 from pathlib import Path
 
@@ -31,8 +32,8 @@ START_NODE = start_nodes[0]
 GOAL_NODE = goal_nodes[0]
 
 
-def calculate_layout(node_ids, edges, start_node, goal_node):
-    """Create a deterministic layered layout using only graph topology."""
+def spring_layout(node_ids, edges, width=760, height=480, iterations=400, seed=7):
+    """Deterministic Fruchterman-Reingold force-directed layout from topology alone."""
     adjacency = {node: [] for node in node_ids}
     for index, edge in enumerate(edges):
         left, right = edge.get("from"), edge.get("to")
@@ -45,42 +46,41 @@ def calculate_layout(node_ids, edges, start_node, goal_node):
         adjacency[left].append(right)
         adjacency[right].append(left)
 
-    levels = {start_node: 0}
-    queue = deque([start_node])
-    while queue:
-        node = queue.popleft()
-        for neighbour in adjacency[node]:
-            if neighbour not in levels:
-                levels[neighbour] = levels[node] + 1
-                queue.append(neighbour)
+    rng = random.Random(seed)
+    margin = 60
+    k = math.sqrt((width * height) / max(len(node_ids), 1))
+    pos = {
+        node: [rng.uniform(margin, width - margin), rng.uniform(margin, height - margin)]
+        for node in node_ids
+    }
 
-    unreachable = [
-        node for node in node_ids if node not in levels and node != goal_node
-    ]
-    furthest = max(
-        (level for node, level in levels.items() if node != goal_node), default=0
-    )
-    for node in unreachable:
-        levels[node] = furthest + 1
-    levels[goal_node] = max(
-        [level for node, level in levels.items() if node != goal_node] or [0]
-    ) + 1
+    for step in range(iterations):
+        disp = {node: [0.0, 0.0] for node in node_ids}
+        for i, a in enumerate(node_ids):
+            for b in node_ids[i + 1:]:
+                dx, dy = pos[a][0] - pos[b][0], pos[a][1] - pos[b][1]
+                dist = math.hypot(dx, dy) or 0.01
+                force = k * k / dist
+                disp[a][0] += dx / dist * force
+                disp[a][1] += dy / dist * force
+                disp[b][0] -= dx / dist * force
+                disp[b][1] -= dy / dist * force
+        for node in node_ids:
+            for neighbour in adjacency[node]:
+                dx, dy = pos[node][0] - pos[neighbour][0], pos[node][1] - pos[neighbour][1]
+                dist = math.hypot(dx, dy) or 0.01
+                force = dist * dist / k
+                disp[node][0] -= dx / dist * force
+                disp[node][1] -= dy / dist * force
+        temperature = max(width, height) * 0.08 * (1 - step / iterations)
+        for node in node_ids:
+            dx, dy = disp[node]
+            dist = math.hypot(dx, dy) or 0.01
+            step_len = min(dist, max(temperature, 0.5))
+            pos[node][0] = min(width - margin, max(margin, pos[node][0] + dx / dist * step_len))
+            pos[node][1] = min(height - margin, max(margin, pos[node][1] + dy / dist * step_len))
 
-    groups = {}
-    for node in node_ids:
-        groups.setdefault(levels[node], []).append(node)
-    max_level = max(groups)
-    largest_group = max(len(group) for group in groups.values())
-    width = max(720, 180 * max_level + 180)
-    height = max(440, 105 * (largest_group + 1))
-    positions = {}
-    for level, group in groups.items():
-        x = 70 if max_level == 0 else 70 + (width - 140) * level / max_level
-        for index, node in enumerate(group, start=1):
-            positions[node] = {
-                "x": round(x),
-                "y": round(height * index / (len(group) + 1)),
-            }
+    positions = {node: {"x": round(x), "y": round(y)} for node, (x, y) in pos.items()}
     return positions, [0, 0, width, height]
 
 
@@ -88,9 +88,7 @@ def compose_text(*parts):
     return " ".join(part.strip() for part in parts if part and part.strip())
 
 
-positions, view_box = calculate_layout(
-    NODES, GAME_CONFIG["edges"], START_NODE, GOAL_NODE
-)
+positions, view_box = spring_layout(NODES, GAME_CONFIG["edges"])
 GAME_DATA = {
     "title": "Der letzte Donut",
     "intro": GAME_CONFIG["nodes"][START_NODE].get("intro", ""),
@@ -110,8 +108,11 @@ for index, edge in enumerate(GAME_DATA["edges"]):
     right = GAME_DATA["nodes"][edge["to"]]
     forward_text = compose_text(left["exitText"], right["entryText"])
     backward_text = compose_text(right["exitText"], left["entryText"])
-    edge["forward"] = {"text": forward_text, "w": len(forward_text)}
-    edge["backward"] = {"text": backward_text, "w": len(backward_text)}
+    weight = edge.get("weight")
+    if weight is not None and (not isinstance(weight, (int, float)) or weight <= 0):
+        raise ValueError(f"game_data.yaml: Kante {edge['id']} hat ein ungültiges weight")
+    edge["forward"] = {"text": forward_text, "w": weight if weight is not None else len(forward_text)}
+    edge["backward"] = {"text": backward_text, "w": weight if weight is not None else len(backward_text)}
 
 EDGES = {edge["id"]: edge for edge in GAME_DATA["edges"]}
 ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"

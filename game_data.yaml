@@ -33,16 +33,16 @@ nodes:
       Zwischen zwei abschließenden Bemerkungen entdeckst du eine winzige
       Gesprächspause und ziehst weiter.
 
-  automat:
-    name: Der Rätsel-Automat
-    short: Automat
-    blurb: Schlechte Laune seit dem Blitzeinschlag 2003.
+  bibliothek:
+    name: Die Bibliothek
+    short: Biblio.
+    blurb: Angeblich der leiseste Ort der Schule. Angeblich.
     entryText: >-
-      Vor dir blinkt der uralte Getränkeautomat. „Was wird länger, je mehr du
-      davon wegnimmst?“, fragt sein Display.
+      Du schlüpfst durch die schwere Bibliothekstür. Zwischen den Regalreihen
+      riecht es nach altem Papier, und irgendwo tickt eine Uhr viel zu laut.
     exitText: >-
-      Du tippst „ein Loch“. Der Automat brummt zufrieden, schiebt sich zur Seite
-      und gibt den nächsten Gang frei.
+      Du legst das Buch, das du nie aufgeschlagen hast, zurück ins Regal und
+      schleichst so leise wie möglich zur nächsten Tür hinaus.
 
   keller:
     name: Die Kellertreppe
@@ -55,17 +55,6 @@ nodes:
       Du stößt dich vom Geländer ab und verschwindest durch den nächsten
       schmalen Durchgang.
 
-  schulhof:
-    name: Der Schulhof
-    short: Schulhof
-    blurb: Windig, weit und vielleicht die überraschende Abkürzung.
-    entryText: >-
-      Die schwere Glastür gibt nach, kalte Luft schlägt dir entgegen und du
-      trittst auf den windigen Schulhof.
-    exitText: >-
-      Du weichst zwei großen Pfützen und einem Fußball aus und hältst auf die
-      nächste Tür zu.
-
   ziel:
     goal: true
     name: Die Theke – der letzte Donut
@@ -76,26 +65,34 @@ nodes:
       der Luft, und der letzte Schoko-Donut liegt direkt vor dir.
     exitText: Mit dem Donut in der Hand drehst du dich noch einmal um.
 
+# Topologie und Gewichte entsprechen dem bekannten Wikipedia-Beispielgraphen zu
+# Dijkstras Algorithmus (Knoten 1-6), Gewichte mit Faktor 100 skaliert, damit
+# genug Platz für Fließtext bleibt. Siehe README für das `weight`-Feld.
 edges:
   - from: start
-    to: hausmeister
-  - from: start
     to: lehrer
-  - from: hausmeister
-    to: automat
-  - from: hausmeister
-    to: keller
-  - from: lehrer
-    to: automat
-  - from: lehrer
-    to: keller
-  - from: automat
-    to: ziel
-  - from: keller
-    to: ziel
+    weight: 700
   - from: start
-    to: schulhof
-  - from: schulhof
+    to: hausmeister
+    weight: 900
+  - from: start
     to: keller
+    weight: 1400
+  - from: lehrer
+    to: hausmeister
+    weight: 1000
+  - from: lehrer
+    to: bibliothek
+    weight: 1500
+  - from: hausmeister
+    to: bibliothek
+    weight: 1100
+  - from: hausmeister
+    to: keller
+    weight: 200
+  - from: bibliothek
+    to: ziel
+    weight: 600
   - from: keller
     to: ziel
+    weight: 900

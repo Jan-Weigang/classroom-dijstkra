@@ -82,20 +82,26 @@ Das gesamte Netz liegt in `game_data.yaml`. Auf der obersten Ebene sind nur
 
 - `nodes` enthält Namen, Kurztexte sowie `entryText` und `exitText`.
 - Genau ein Knoten bekommt `start: true`, genau einer `goal: true`.
-- `edges` verbindet ausschließlich jeweils `from` und `to`; Kantentexte und
+- `edges` verbindet jeweils `from` und `to`; ein optionales `weight` überschreibt
+  das sonst aus dem Text berechnete Gewicht (siehe unten). Feste
   Layoutangaben gibt es nicht.
 
 Die Reihenfolge der Knoten in der YAML bestimmt die stabile Reihenfolge in der
-Tabelle und innerhalb einer Layoutebene. Flask berechnet Ebenen, Koordinaten und
-SVG-Größe bei jedem Serverstart automatisch aus den Knoten und Kanten. Start und
-Ziel werden dabei links beziehungsweise rechts verankert.
+Tabelle. Die Koordinaten berechnet Flask bei jedem Serverstart automatisch mit
+einem deterministischen Feder-Layout (Fruchterman-Reingold) allein aus der
+Graphtopologie – es gibt keine Ebenen und keine feste Verankerung von Start
+oder Ziel, Kanten dürfen also frei zwischen beliebigen Knoten verlaufen.
 
 Für einen Weg von A nach B setzt Flask den abgespielten Text aus `exitText` von A
 und `entryText` von B zusammen. In Gegenrichtung verwendet es entsprechend den
-Ausgangstext von B und den Eingangstext von A. Kanten-IDs und richtungsabhängige
-Gewichte werden beim Serverstart automatisch aus Reihenfolge und Textlänge
-erzeugt. Damit lassen sich ohne Änderungen an HTML oder Python andere
-ungerichtete Netze aufbauen. Nach Änderungen an der YAML-Datei Flask neu starten.
+Ausgangstext von B und den Eingangstext von A. Kanten-IDs werden beim
+Serverstart automatisch aus der Reihenfolge erzeugt; das Gewicht je Richtung
+ist standardmäßig die Textlänge, kann aber pro Kante mit dem optionalen Feld
+`weight` überschrieben werden (z. B. um ein Lehrbuchbeispiel mit festen,
+richtungsunabhängigen Gewichten nachzubauen, ohne den Fließtext exakt auf eine
+Zeichenzahl trimmen zu müssen). Damit lassen sich ohne Änderungen an HTML oder
+Python andere ungerichtete Netze aufbauen. Nach Änderungen an der YAML-Datei
+Flask neu starten.
 
 Die Aktualisierungsrate lässt sich optional ändern:
 
